@@ -1,29 +1,19 @@
 
 import geekcashapi as api
-import util
-import commit
-import json
-import os
 import time
 from util import log
 import util
 import model
 import datacenter
-import threading
 
 fee = 0.05
-
 rawdata_path = '../rawdata/{0}.json'
-
 commit_file_curr_bets = '../geekcashlucky.github.io/curr_bets.json'
-
 last_update_view_record_file = '_last_view_block'
-
 bet_view_path = '../betview/{0}.json'
-
 is_updating_view = False
-
 last_collect_balance_block_height = -1
+
 
 def get_account_address_by_number(number):
     s_number = str(number)
@@ -73,16 +63,22 @@ def save_unspent_data_to_database(bet_list):
     print('Construct bet list used: {0}'.format(end_time - start_time))
 
 
-def try_collect_all_balance(bet_list, unspent_data_dict):
-    '''
+def try_collect_all_balance(bet_list, curr_block_height):
+    """
     1. 若 unspent_list 超过 30 则进行一次资金汇集
     2. 若 unspent_list 中有的块结果已出，则进行一次资金汇集
-    '''
-    pass
-    #if model.now_is_collect_balance_block(prev_block_height,curr_block_height):
-    #    last_collect_balance_block_height = curr_block_height
-    #    model.collect_balance(curr_block_height)
-    #    return
+    """
+    to_collect = False
+    if len(bet_list) >= 30:
+        to_collect = True
+    else:
+        for bet in bet_list:
+            if curr_block_height >= bet.bet_block_height:
+                to_collect = True
+                break
+    
+    if to_collect:
+        model.collect_balance(curr_block_height)
 
 
 def try_closing_bets(curr_block_height):
@@ -93,7 +89,6 @@ def try_closing_bets(curr_block_height):
         if curr_block_height > bet_block_height:
             unclosing_dbbet_list = unclosing_dbbet_dict[bet_block_height]
 
-            player_count = len(unclosing_dbbet_list)
             win_player_count = 0
             lose_player_count = 0
             total_bet_amount = 0.0
@@ -127,8 +122,8 @@ def try_closing_bets(curr_block_height):
                 if dbbet.bet_state == 1:
                     bet_amount = dbbet.bet_amount
                     bet_percentage = bet_amount / total_win_bet_amount
-                    payment_amount = bonus * bet_percentage
-                    dbbet.payment_amount = payment_amount
+                    reward_amount = bonus * bet_percentage
+                    dbbet.reward_amount = reward_amount
                     dbbet.payment_state = 0
             datacenter.update_dbbet_list(unclosing_dbbet_list)
     end_time = time.time()
@@ -136,17 +131,33 @@ def try_closing_bets(curr_block_height):
 
 
 def try_pay_winers(curr_block_height):
-    '''
+    """
     检查资金库，若资金足够支付所有需要支付的资金，则进行支付，否则等下一轮
-    '''
-    pass
+    :param curr_block_height:
+    :return:
+    """
+    bet_list = datacenter.get_need_pay_dbbet_list()
+    address_list = []
+    amount_list = []
+    for bet in bet_list:
+        address_list.append(bet.payment_address)
+        amount_list.append(bet.reward_amount + bet.bet_amount)
+
+    pay_reward_txid = model.pay_reward(address_list,amount_list)
+
+    if pay_reward_txid != -1:
+        for bet in bet_list:
+            bet.payment_txid = pay_reward_txid
+            bet.payment_state = 1
+        datacenter.update_dbbet_list(bet_list)
+    else:
+        print('No enough money to pay at block {0}, wait next block!'.format(curr_block_height))
 
 
-# --------------------------------------------------------------------------------
 def on_block_height_changed(prev_block_height, curr_block_height):
     log('On block height changed: {0} -> {1}'.format(prev_block_height, curr_block_height))
     
-    #!!!! NOTE: 确保这个过程不会中断，否则有可能会漏掉玩家转入的币
+    # !!!! NOTE: 确保这个过程不会中断，否则有可能会漏掉玩家转入的币
     
     unspent_data_dict = model.collect_unspent_data()
     bet_list = model.construct_bets(unspent_data_dict)
@@ -158,7 +169,7 @@ def on_block_height_changed(prev_block_height, curr_block_height):
     save_unspent_data_to_database(bet_list)
 
     # 3. 尝试资金汇集
-    try_collect_all_balance(curr_block_height, unspent_data_dict)
+    try_collect_all_balance(bet_list, curr_block_height)
     
     # 4. 尝试结算下注
     try_closing_bets(curr_block_height)
@@ -168,7 +179,7 @@ def on_block_height_changed(prev_block_height, curr_block_height):
 
 
 def main_game_loop():
-    print(' Game Start '.center(50,'='))
+    print(' Game Start '.center(50, '='))
     last_block_height = api.get_curr_blockchain_height()
     print('Now Block {0}'.format(last_block_height))
     while True:

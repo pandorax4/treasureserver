@@ -37,9 +37,8 @@ class Bet(object):
         self.bet_state = -1     # -1 no result, 0 lose, 1 win
 
 
-
 def init_bet_addresses():
-    global addresses, number2addresses,addresses2number, collect_balance_address
+    global addresses, number2addresses, addresses2number, collect_balance_address
 
     account_name = 'collection'
     collect_balance_address = api.get_account_address(account_name)
@@ -57,10 +56,10 @@ def init_bet_addresses():
             addresses.append(address)
             number2addresses[num] = address
             addresses2number[address] = num
-            #print(num,address)
+            # print(num,address)
     else:
         for num in range(0,10):
-            account_name = '{0}{1}'.format(account_prefix, num)
+            account_name = '{}{}'.format(account_prefix, num)
             address = api.get_account_address(account_name)
             if address == -1:
                 sys.exit()
@@ -68,8 +67,7 @@ def init_bet_addresses():
                 addresses.append(address)
                 number2addresses[num] = address
                 addresses2number[address] = num
-        
-        
+
         json_str = json.dumps(number2addresses, indent=4, separators=(',',':'))
         f = open(address_file,'w')
         f.write(json_str)
@@ -79,7 +77,6 @@ def init_bet_addresses():
     for num in number2addresses:
         print(num, number2addresses[num])
     
-
 
 def get_bet_block_height_by_join_block_height(block_height):
     if block_height % block_count_of_round == 0:
@@ -136,11 +133,13 @@ def create_abet(_join_txid, _bet_address, _bet_amount):
 
     return bet
 
+
 # 获取每一个下注地址的 unspent 数据 
 def collect_unspent_data():
-    '''
-    return: {address:unspent_list,...}
-    '''
+    """
+
+    :return: {address:unspent_list,...}
+    """
     unspent_data_dict = {}
     for address in addresses:
         unspent_list = api.get_unspent_list_by_address(address)
@@ -168,3 +167,19 @@ def construct_bets(unspent_data_dict):
 def collect_balance(curr_block_height):
     for address in addresses:
         api.send_all_balance_to_address(address,collect_balance_address,'collect at {}'.format(curr_block_height))
+
+
+def pay_reward(address_list,amount_list, curr_block_height):
+    total_pay = 0
+    for amount in amount_list:
+        total_pay += amount
+
+    balance = api.get_balance_by_address(collect_balance_address)
+    if balance >= total_pay:
+        return api.send_to_many(collect_balance_address,
+                                address_list,
+                                amount_list,
+                                collect_balance_address,
+                                "Pay reward {}".format(curr_block_height))
+    else:
+        return -1

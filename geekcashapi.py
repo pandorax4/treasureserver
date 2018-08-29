@@ -142,7 +142,7 @@ def get_block_hash_height_time_by_txid(_txid):
 def get_balance_by_address(_address):
     unspent_list = get_unspent_list_by_address(_address)
     if unspent_list == -1:
-        log('get balance by address faild: {0}'.format(_address))
+        log('get balance by address faild: {}'.format(_address))
         return -1
     balance = 0
     for unspent in unspent_list:

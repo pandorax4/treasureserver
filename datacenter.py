@@ -40,14 +40,15 @@ class DBBet(Model):
     join_block_timestamp = IntegerField()
     bet_block_height = IntegerField()
     bet_block_hash = CharField()                # after result
-    bet_block_timestamp = IntegerField           # after result
+    bet_block_timestamp = IntegerField()           # after result
     bet_block_nonce = IntegerField()            # after result
     bet_address = CharField()
     bet_amount = FloatField()
     bet_nonce_last_digit = IntegerField()
     payment_address = CharField()
-    payment_amount = FloatField(default=0.0)
+    reward_amount = FloatField(default=0.0)
     payment_state = IntegerField(default=-1)     # -1 no need to pay, 0 ready to pay, 1 paied
+    payment_txid = CharField()
     bet_state = IntegerField(default=-1)        # -1 un result, 0 lose, 1 win
     
     created_at = DateTimeField(default=datetime.datetime.now)
@@ -56,46 +57,56 @@ class DBBet(Model):
         database = db
 
 
-
 def write_data_to_file(file_path, data):
     try:
         f = open(file_path,'w')
         f.write(data)
         f.close()
-    except:
-        log('write data to file error, file: {}\ndata: {}'.format(file_path,data))
+    except Exception as _ex:
+        log('write data to file error, file: {}\ndata: {} exception: {}'.format(file_path, data, _ex))
 
 
 def save_bet_data(bet_list):
     with db.atomic():
         for bet in bet_list:
             try:
-                dbBet = DBBet.get(DBBet.join_txid == bet.join_txid)
+                dbbet = DBBet.get(DBBet.join_txid == bet.join_txid)
             except DoesNotExist:
-                dbBet = None
+                dbbet = None
 
-            if dbBet == None:
-                log('Net player: {} BetDigit:{} BetAmount:{}'.format(bet.payment_address,bet.bet_nonce_last_digit,bet.bet_amount))
-                dbBet = DBBet.create(
-                    join_txid = bet.join_txid,
-                    join_block_height = bet.join_block_height,
-                    join_block_hash = bet.join_block_hash,
-                    join_block_timestamp = bet.join_block_timestamp,
-                    bet_block_height = bet.bet_block_height,
-                    bet_block_hash = bet.bet_block_hash,
-                    bet_block_timestamp = bet.bet_block_timestamp,
-                    bet_block_nonce = bet.bet_block_nonce,
-                    bet_address = bet.bet_address,
-                    bet_amount = bet.bet_amount,
-                    bet_nonce_last_digit = bet.bet_nonce_last_digit,
-                    payment_address = bet.payment_address
+            if dbbet is None:
+                log('Net player: {} BetDigit:{} BetAmount:{}'.format(bet.payment_address,
+                                                                     bet.bet_nonce_last_digit,
+                                                                     bet.bet_amount))
+                DBBet.create(
+                    join_txid=bet.join_txid,
+                    join_block_height=bet.join_block_height,
+                    join_block_hash=bet.join_block_hash,
+                    join_block_timestamp=bet.join_block_timestamp,
+                    bet_block_height=bet.bet_block_height,
+                    bet_block_hash=bet.bet_block_hash,
+                    bet_block_timestamp=bet.bet_block_timestamp,
+                    bet_block_nonce=bet.bet_block_nonce,
+                    bet_address=bet.bet_address,
+                    bet_amount=bet.bet_amount,
+                    bet_nonce_last_digit=bet.bet_nonce_last_digit,
+                    payment_address=bet.payment_address
                 )
 
 
+def get_need_pay_dbbet_list(curr_block_height):
+    """
+    :param curr_block_height:
+    :return: [DBBet]
+    """
+    bet_list = DBBet.select().where(DBBet.payment_state == 0 and curr_block_height > DBBet.bet_block_height)
+    return bet_list
+
+
 def get_unclosing_dbbet_dict():
-    '''
-    return {bet_block_height: [DBBet],...}
-    '''
+    """
+    :return: {bet_block_height: [DBBet],...}
+    """
     unclosing_dbbet_dict = {}
     unclosing_bet_list = DBBet.select().where(DBBet.bet_state == -1)
     for dbbet in unclosing_bet_list:
@@ -119,7 +130,8 @@ def get_bet_block_list(bet_block_height):
     bet_list = DBBet.select().where(DBBet.bet_block_height == bet_block_height)
     return bet_list
 
-#bet_block,  bet amount, bet number,bet_state, player address, txid, datetime
+
+# bet_block,  bet amount, bet number,bet_state, player address, txid, datetime
 def get_bet_list_view_json(bet_list):
     data = []
     for bet in bet_list:
