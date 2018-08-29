@@ -55,102 +55,8 @@ def make_sure_network_updated():
 
 
 # ------------------------------- About Game Logic -------------------------------
-def write_last_update_view_block(block_height):
-    f = open(last_update_view_record_file,'w')
-    f.write(str(block_height))
-    f.close()
 
-
-def generate_bet_block_info(bet_block_height):
-    log('Try Update bet block info: {}'.format(bet_block_height))
-    bet_list = datacenter.get_bet_block_list(bet_block_height)
-    if len(bet_list) > 0:
-        log('Generate bet block info json , bet count: {}'.format(len(bet_list)))
-        json_str = datacenter.get_bet_list_view_json(bet_list)
-        file_path = bet_view_path.format(bet_block_height)
-        f = open(file_path,'w')
-        f.write(json_str)
-        f.close()
-
-
-def workthread_update_view():
-    global is_updating_view
-    #try:
-    curr_block_height = api.get_curr_blockchain_height()
-    last_update_block_height = curr_block_height
-    # read last update block
-    if os.path.exists(last_update_view_record_file):
-        f = open(last_update_view_record_file,'r')
-        text = f.read()
-        f.close()
-        last_update_block_height = int(text)
-
-    if last_update_block_height > curr_block_height:
-        log('Something wrong, last update block height is > curr block_height: {} > {}'.format(last_update_block_height,curr_block_height))
-    elif last_update_block_height < curr_block_height:
-        start = last_update_block_height + 1
-        end = curr_block_height + 1
-        last_bet_block = model.get_bet_block_height_by_join_block_height(last_update_block_height)
-        # force update last bet block, because i'm not sure last bet block info is update successfuly.
-        generate_bet_block_info(last_bet_block)
-        for block_height in range(start,end):
-            curr_bet_block = model.get_bet_block_height_by_join_block_height(block_height)
-            if curr_bet_block != last_bet_block:
-                generate_bet_block_info(curr_bet_block)
-                last_bet_block = curr_bet_block
-            last_update_block_height = block_height
-            write_last_update_view_block(last_update_block_height)
-    else:
-        bet_block = model.get_bet_block_height_by_join_block_height(curr_block_height)
-        generate_bet_block_info(bet_block)
-        write_last_update_view_block(curr_block_height)
-
-        # Commit to page
-
-    is_updating_view = False
-    #except Exception as _e:
-    #    is_updating_view = False
-     #   log('Update view exception: ' + str(_e))
-
-    
-def update_view():
-    global is_updating_view
-    if is_updating_view == True:
-        return
-    is_updating_view = True
-    #try:
-    t = threading.Thread(target=workthread_update_view)
-    t.setDaemon(True)
-    t.start()
-    #except:
-    #    is_updating_view = False
-
-
-
-
-def check_and_payout():
-    pass
-
-
-
-# --------------------------------------------------------------------------------
-
-
-# collect data
-# balance collect
-# payment
-# generate static page
-# update static page to github pages
-def on_block_height_changed(prev_block_height, curr_block_height):
-    global last_collect_balance_block_height
-    log('On block height changed: {0} -> {1}'.format(prev_block_height, curr_block_height))
-    
-    # ================================================================
-    '''
-    NOTE: 确保这个过程不会中断，否则有可能会漏掉玩家转入的币
-    '''
-    unspent_data_dict = model.collect_unspent_data()
-
+def save_raw_unspent_data_to_json(unspent_data_dict, curr_block_height):
     # save raw unspent data
     start_time = time.time()
     raw_unspent_json_str = util.get_format_json(unspent_data_dict)
@@ -159,21 +65,27 @@ def on_block_height_changed(prev_block_height, curr_block_height):
     end_time = time.time()
     print('Save raw unspent data used: {0}'.format(end_time - start_time))
 
-    # save bet data
+
+def save_unspent_data_to_database(bet_list):
     start_time = time.time()
-    bet_list = model.construct_bets(unspent_data_dict)
     datacenter.save_bet_data(bet_list)
     end_time = time.time()
     print('Construct bet list used: {0}'.format(end_time - start_time))
 
-    # !!!!!!!!!! send all balance to one address !!!!!!!!!!
-    if model.now_is_collect_balance_block(prev_block_height,curr_block_height):
-        last_collect_balance_block_height = curr_block_height
-        model.collect_balance(curr_block_height)
-        return
-    # ================================================================
 
-    # closing bet
+def try_collect_all_balance(bet_list, unspent_data_dict):
+    '''
+    1. 若 unspent_list 超过 30 则进行一次资金汇集
+    2. 若 unspent_list 中有的块结果已出，则进行一次资金汇集
+    '''
+    pass
+    #if model.now_is_collect_balance_block(prev_block_height,curr_block_height):
+    #    last_collect_balance_block_height = curr_block_height
+    #    model.collect_balance(curr_block_height)
+    #    return
+
+
+def try_closing_bets(curr_block_height):
     start_time = time.time()
     print('Star Closing Process ...')
     unclosing_dbbet_dict = datacenter.get_unclosing_dbbet_dict()
@@ -222,11 +134,37 @@ def on_block_height_changed(prev_block_height, curr_block_height):
     end_time = time.time()
     print('Closing Process End! used: ', (end_time - start_time))
 
-    # Check And payout
-    if last_collect_balance_block_height > 0 and (curr_block_height - last_collect_balance_block_height > 1):
-        check_and_payout()
 
-    update_view()
+def try_pay_winers(curr_block_height):
+    '''
+    检查资金库，若资金足够支付所有需要支付的资金，则进行支付，否则等下一轮
+    '''
+    pass
+
+
+# --------------------------------------------------------------------------------
+def on_block_height_changed(prev_block_height, curr_block_height):
+    log('On block height changed: {0} -> {1}'.format(prev_block_height, curr_block_height))
+    
+    #!!!! NOTE: 确保这个过程不会中断，否则有可能会漏掉玩家转入的币
+    
+    unspent_data_dict = model.collect_unspent_data()
+    bet_list = model.construct_bets(unspent_data_dict)
+
+    # 1. 将当前块未花费的数据保存起来
+    save_raw_unspent_data_to_json(unspent_data_dict, curr_block_height)
+
+    # 2. 将每一个地址的 unspent 数据存入数据库
+    save_unspent_data_to_database(bet_list)
+
+    # 3. 尝试资金汇集
+    try_collect_all_balance(curr_block_height, unspent_data_dict)
+    
+    # 4. 尝试结算下注
+    try_closing_bets(curr_block_height)
+
+    # 5. 尝试支付赢家奖金
+    try_pay_winers(curr_block_height)
 
 
 def main_game_loop():
@@ -254,9 +192,4 @@ if __name__ == '__main__':
     make_sure_network_updated()
     model.init_bet_addresses()
     main_game_loop()
-    #curr_height = api.get_curr_blockchain_height()
-    #prev_height = curr_height - 1
-    #on_block_height_changed(prev_height,curr_height)
-    #result = api.send_to_many('main',address_list,amount_list, change,'test_send_many')
-    #print(result)
 

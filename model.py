@@ -136,7 +136,7 @@ def create_abet(_join_txid, _bet_address, _bet_amount):
 
     return bet
 
-
+# 获取每一个下注地址的 unspent 数据 
 def collect_unspent_data():
     '''
     return: {address:unspent_list,...}
