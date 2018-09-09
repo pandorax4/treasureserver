@@ -8,7 +8,7 @@ import datacenter
 
 fee = 0.05
 rawdata_path = '../rawdata/{0}.json'
-commit_file_curr_bets = '../geekcashlucky.github.io/curr_bets.json'
+commit_file_curr_bets = '../pandorax4.github.io/curr_bets.json'
 last_update_view_record_file = '_last_view_block'
 bet_view_path = '../betview/{0}.json'
 is_updating_view = False
