@@ -13,7 +13,7 @@ last_update_view_record_file = '_last_view_block'
 bet_view_path = '../betview/{0}.json'
 is_updating_view = False
 last_collect_balance_block_height = -1
-
+last_update_view_timestamp = -1
 
 def get_account_address_by_number(number):
     s_number = str(number)
@@ -85,7 +85,10 @@ def try_closing_bets(curr_block_height):
     start_time = time.time()
     print('Star Closing Process ...')
     unclosing_dbbet_dict = datacenter.get_unclosing_dbbet_dict()
+    unclosing_bet_block_set = set()   # 需要更新到View的
     for bet_block_height in unclosing_dbbet_dict:
+        unclosing_bet_block_set.add(bet_block_height)
+
         if curr_block_height > bet_block_height:
             unclosing_dbbet_list = unclosing_dbbet_dict[bet_block_height]
 
@@ -128,22 +131,26 @@ def try_closing_bets(curr_block_height):
             datacenter.update_dbbet_list(unclosing_dbbet_list)
     end_time = time.time()
     print('Closing Process End! used: ', (end_time - start_time))
+    return unclosing_bet_block_set
 
 
 def try_pay_winers(curr_block_height):
     """
     检查资金库，若资金足够支付所有需要支付的资金，则进行支付，否则等下一轮
-    :param curr_block_height:
+    :param curr_block_height
     :return:
     """
     bet_list = datacenter.get_need_pay_dbbet_list()
+    paied_block_set = set()
     address_list = []
     amount_list = []
     for bet in bet_list:
         address_list.append(bet.payment_address)
         amount_list.append(bet.reward_amount + bet.bet_amount)
 
-    pay_reward_txid = model.pay_reward(address_list,amount_list)
+        paied_block_set.add(bet.bet_block_height)
+
+    pay_reward_txid = model.pay_reward(address_list, amount_list)
 
     if pay_reward_txid != -1:
         for bet in bet_list:
@@ -152,6 +159,13 @@ def try_pay_winers(curr_block_height):
         datacenter.update_dbbet_list(bet_list)
     else:
         print('No enough money to pay at block {0}, wait next block!'.format(curr_block_height))
+    return paied_block_set
+
+
+
+def try_update_view(block_set):
+    curr_timestamp = int(time.time())
+    pass
 
 
 def on_block_height_changed(prev_block_height, curr_block_height):
@@ -172,10 +186,16 @@ def on_block_height_changed(prev_block_height, curr_block_height):
     try_collect_all_balance(bet_list, curr_block_height)
     
     # 4. 尝试结算下注
-    try_closing_bets(curr_block_height)
+    closing_block_set = try_closing_bets(curr_block_height)
 
     # 5. 尝试支付赢家奖金
-    try_pay_winers(curr_block_height)
+    paied_block_set = try_pay_winers(curr_block_height)
+
+    # 算出哪一些下注块的信息需要更新
+    need_update_view_block_set = closing_block_set | paied_block_set
+
+    # 尝试更新网页
+    try_update_view(need_update_view_block_set)
 
 
 def main_game_loop():

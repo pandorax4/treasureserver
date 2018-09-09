@@ -1,19 +1,20 @@
-import subprocess
 import json
 import os
 from util import log
 
 command_prefix = 'gcli'
 
+
 def do_command(command):
     command = command_prefix + ' ' + command
     result = os.popen(command).read().strip()
 
     if result.startswith('error code'):
-        print('EXCEPTION: ',result)
+        print('EXCEPTION: ', result)
         return -1
     else:
         return result
+
 
 def get_account_name_by_address(_address):
     command = 'getaccount {0}'.format(_address)
@@ -25,9 +26,9 @@ def get_account_name_by_address(_address):
 
 
 def get_account_address(account_name):
-    '''
+    """
     Get geekcash address by account name, if the account no address, create new one.
-    '''
+    """
     command = 'getaddressesbyaccount {0}'.format(account_name)
     result = do_command(command)
     if result == -1:
@@ -113,7 +114,7 @@ def get_block_timestamp_nonce_by_hash(block_hash):
     block_info = get_block_info_by_hash(block_hash)
     if block_info != -1:
         json_obj = json.loads(block_info)
-        return json_obj['time'],json_obj['nonce']
+        return json_obj['time'], json_obj['nonce']
     return -1,-1
 
 
@@ -122,15 +123,15 @@ def get_block_hash_timestamp_nonce_by_height(block_height):
     if block_hash != -1:
         timestamp, nonce = get_block_timestamp_nonce_by_hash(block_hash)
         if timestamp != -1 and nonce != -1:
-            return block_hash,timestamp,nonce
-    return -1,-1,-1
+            return block_hash, timestamp, nonce
+    return -1, -1, -1
 
 
 def get_block_hash_height_time_by_txid(_txid):
     command = 'getrawtransaction {0} 1'.format(_txid)
     result = do_command(command)
     if result == -1:
-        log('get block hash and hgith and time faild: {0}',_txid)
+        log('get block hash and hgith and time faild: {0}', _txid)
         return -1,-1,-1
     json_obj = json.loads(result)
     block_hash = json_obj['blockhash']
@@ -174,7 +175,7 @@ def get_input_vin_list_by_unspent_txid(unspent_txid):
 
 
 def get_unspent_list_by_address(_address):
-    '''
+    """
     return: a list that contains all unspent info of _address
     [{
         "txid": "5c729ac838168de171676388ee40c3d786b750624429d78e62edc8a75500fef0",
@@ -188,7 +189,7 @@ def get_unspent_list_by_address(_address):
         "spendable": true,
         "solvable": true
     }]
-    '''
+    """
     command = 'listunspent 1 999999999 [\\"{0}\\"]'.format(_address)
     result = do_command(command)
     if result != -1:
@@ -197,7 +198,7 @@ def get_unspent_list_by_address(_address):
     return -1
 
 
-def get_payment_address(unspent_txid,unspent_address):
+def get_payment_address(unspent_txid, unspent_address):
     command = 'getrawtransaction {0} 1'.format(unspent_txid)
     result = do_command(command)
     if result == -1:
@@ -220,7 +221,7 @@ def get_payment_address(unspent_txid,unspent_address):
         command = 'getrawtransaction {0} 1'.format(vin_txid)
         result = do_command(command)
         if result == -1:
-            log('get payment address faild, get rawtransaction by vin_txid faild! vin_txid: {0} vin_vout:{1}'.format(vin_txid,vin_vout))
+            log('get payment address faild, get rawtransaction by vin_txid faild! vin_txid: {0} vin_vout:{1}'.format(vin_txid, vin_vout))
             return -1
         json_obj = json.loads(result)
         vout = json_obj['vout'][vin_vout]
@@ -238,15 +239,15 @@ def get_payment_address(unspent_txid,unspent_address):
         return -1
 
 
-def send_to_many(from_address, address_list, amount_list, change_address, comment = ''):
-    '''
+def send_to_many(from_address, address_list, amount_list, change_address, comment=''):
+    """
     from_address:   which address to payout
     address_list:   which addresses you want to pay ['address1','address2','address3']
     amount_list:    the item length is match to address_list, the amount you want to pay for each address
     change_address: basically , the change_address is the address of from_account, make sure account has just one address, that's very clear
     comment:        comment is the comment of command, whatever
     Note:           receiver pay the fee!
-    '''
+    """
     address_count = len(address_list)
     amount_count = len(amount_list)
     if address_count != amount_count:
@@ -264,11 +265,11 @@ def send_to_many(from_address, address_list, amount_list, change_address, commen
         return -1
 
     total_payout = 0.0
-    for x in range(0,amount_count):
+    for x in range(0, amount_count):
         total_payout += amount_list[x]
     
     total_change = account_balance - total_payout
-    total_change = round(total_change,8)
+    total_change = round(total_change, 8)
 
     if total_change < 0:
         print("Balance not enough, can't payout! balance:{0},payout:{1}".format(account_balance, total_payout))
@@ -287,7 +288,7 @@ def send_to_many(from_address, address_list, amount_list, change_address, commen
     print('Change {0} {1}'.format(change_address,total_change))
 
     # combine change
-    if total_change > 0 and change_address != None:
+    if total_change > 0 and change_address is not None:
         payout_str += '\\"{0}\\":{1},'.format(change_address,total_change)
         address_str += '\\"{0}\\",'.format(change_address)
 
@@ -299,7 +300,7 @@ def send_to_many(from_address, address_list, amount_list, change_address, commen
     return do_command(command)
 
 
-def send_to_address(from_address, address, amount, change_address, comment = ''):
+def send_to_address(from_address, address, amount, change_address, comment=''):
     address_list = [address]
     amount_list = [amount]
     return send_to_many(from_address,address_list,amount_list,change_address,comment)
@@ -312,7 +313,7 @@ def send_all_balance_to_address(from_address, to_address, comment=''):
         return -1
 
     if account_balance == 0:
-        #print('No Balance in address {0}'.format(from_address))
+        # print('No Balance in address {0}'.format(from_address))
         return -1
 
     address_list = [to_address]

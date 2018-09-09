@@ -1,7 +1,5 @@
 from peewee import *
 import datetime
-import time
-import json
 from util import log
 import util
 
@@ -9,8 +7,9 @@ db = SqliteDatabase('../db/bets.db')
 inputdb = SqliteDatabase('../db/input.db')
 betcollectdb = SqliteDatabase('../db/betcollect.db')
 
+
 class DBBetInput(Model):
-    txid = CharField(unique = True)
+    txid = CharField(unique=True)
     bet_block_height = IntegerField()
     bet_amount = FloatField()
     bet_nonce_last_digit = IntegerField()
@@ -164,3 +163,9 @@ def init_db():
 
     betcollectdb.connect()
     betcollectdb.create_tables([DBBetCollect])
+
+
+def close_db():
+    db.close()
+    inputdb.close()
+    betcollectdb.close()
