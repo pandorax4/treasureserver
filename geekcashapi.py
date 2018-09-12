@@ -190,7 +190,16 @@ def get_unspent_list_by_address(_address):
         "solvable": true
     }]
     """
-    command = 'listunspent 1 999999999 [\\"{0}\\"]'.format(_address)
+    command = 'listunspent 0 999999999 [\\"{0}\\"]'.format(_address)
+    result = do_command(command)
+    if result != -1:
+        json_obj = json.loads(result)
+        return json_obj
+    return -1
+
+
+def get_unspent_list():
+    command = 'listunspent'
     result = do_command(command)
     if result != -1:
         json_obj = json.loads(result)
@@ -278,24 +287,24 @@ def send_to_many(from_address, address_list, amount_list, change_address, commen
     payout_str = ''
     address_str = ''
     # combine receivers
-    for x in range(0,address_count):
+    for x in range(0, address_count):
         address = address_list[x]
         amount = amount_list[x]
-        payout_str += '\\"{0}\\":{1},'.format(address,amount) 
+        payout_str += '\\"{0}\\":{1},'.format(address, amount)
         address_str += '\\"{0}\\",'.format(address)
-        print('Payout {0} {1}'.format(address,amount))
+        print('Payout {0} {1}'.format(address, amount))
 
-    print('Change {0} {1}'.format(change_address,total_change))
+    print('Change {0} {1}'.format(change_address, total_change))
 
     # combine change
     if total_change > 0 and change_address is not None:
-        payout_str += '\\"{0}\\":{1},'.format(change_address,total_change)
+        payout_str += '\\"{0}\\":{1},'.format(change_address, total_change)
         address_str += '\\"{0}\\",'.format(change_address)
 
     payout_str = '"{' + payout_str[:-1] + '}"'
     address_str = '"[' + address_str[:-1] + ']"'
 
-    command = 'sendmany "{0}" {1} 1 false "{2}" {3}'.format(account_name,payout_str,comment,address_str)
+    command = 'sendmany "{0}" {1} 0 false "{2}" {3}'.format(account_name, payout_str, comment, address_str)
     
     return do_command(command)
 
@@ -303,7 +312,7 @@ def send_to_many(from_address, address_list, amount_list, change_address, commen
 def send_to_address(from_address, address, amount, change_address, comment=''):
     address_list = [address]
     amount_list = [amount]
-    return send_to_many(from_address,address_list,amount_list,change_address,comment)
+    return send_to_many(from_address, address_list, amount_list, change_address, comment)
 
 
 def send_all_balance_to_address(from_address, to_address, comment=''):
@@ -320,7 +329,44 @@ def send_all_balance_to_address(from_address, to_address, comment=''):
     amount_list = [account_balance]
     log('Send all balance from {} -> {}'.format(from_address, to_address))
     return send_to_many(from_address, address_list, amount_list, None, comment)
-    
+
+
+def send_unspent_to_address(unspent, to_address):
+    input_txid = unspent['txid']
+    vout = unspent['vout']
+    amount = unspent['amount']
+    amount_minus_fee = amount - 0.00001100
+    txid_array = [{'"txid"': '"{}"'.format(input_txid), '"vout"': vout}]
+    output_dict = {'"{}"'.format(to_address): amount_minus_fee}
+
+    txid_json_str = json.dumps(txid_array)
+    output_json_str = json.dumps(output_dict)
+
+    command = 'createrawtransaction "{}" "{}"'.format(txid_json_str, output_json_str)
+
+    # create raw transaction
+    result = do_command(command)
+    if result == -1:
+        return -1
+
+    # sign raw transaction
+    command = 'signrawtransaction "{}"'.format(result)
+    result = do_command(command)
+    if result == -1:
+        return -1
+
+    result = json.loads(result)
+
+    # send raw transaction
+    command = 'sendrawtransaction "{}"'.format(result['hex'])
+    result = do_command(command)
+
+    if result != -1:
+        print(result, amount_minus_fee, '->', to_address)
+
+    return result
+
+
 
 # TODO: 待测试
 # 1. 使用代码瞬间转入多笔
@@ -342,3 +388,62 @@ bet_address = "GSGe3BWjtdNQ5KA9TjnL6TD6jeZm57RweT"
 result = get_payment_address(bet_txid, bet_address)
 print(result)
 '''
+
+
+#main_address = get_account_address("main")
+#to_address = "GKQxy9ZfaqCbqhvn6Jxt5LuLY48SRfYMHo"
+bank_address = "GaVMbZ755ie3b39Au3pi9LkFd2pGG4mU9a"
+
+
+#result = send_to_address(from_address, to_address, 2.0, from_address, "Comment")
+#print("Result: ",result)
+
+'''
+address_list = []
+amount_list = []
+
+for x in range(500):
+    account_name = "sub_{}".format(x)
+    address = get_account_address(account_name)
+    # print(account_name, address)
+    balance = get_balance_by_address(address)
+    # address_list.append(address)
+    # amount_list.append(2.0)
+    if balance > 0.0:
+        print(account_name, address, balance)
+    #print("Collect from {}, collect balance {}".format(address, balance))
+    #result = send_all_balance_to_address(address, bank_address, "Collect From {}".format(account_name))
+    #print(result)
+'''
+# print("Ready TO Send: ")
+
+# result = send_to_many(bank_address, address_list, amount_list, bank_address, "Test send to 500 address")
+# print("Result: ", result)
+
+'''
+address = "GgZgnTdyqBtxAzxi25Tyeuy3c3ueYex2fs"
+
+unspent_list = get_unspent_list_by_address(address)
+
+for unspent in unspent_list:
+    result = send_unspent_to_address(unspent, bank_address)
+    print(result)
+'''
+
+'''
+for x in range(500):
+    account_name = "sub_{}".format(x)
+    address = get_account_address(account_name)
+    unspent_list = get_unspent_list_by_address(address)
+    for unspent in unspent_list:
+        print("Account: ", account_name, address)
+        send_unspent_to_address(unspent, bank_address)
+'''
+
+unspent_list = get_unspent_list()
+unspent_count = 0
+for unspent in unspent_list:
+    print(unspent['txid'], unspent['address'], unspent['amount'])
+    unspent_count += 1
+
+print("Unspent Count: ", unspent_count)
