@@ -1,6 +1,7 @@
 import json
 import os
 from util import log
+import util
 
 command_prefix = 'gcli'
 
@@ -331,6 +332,66 @@ def send_all_balance_to_address(from_address, to_address, comment=''):
     return send_to_many(from_address, address_list, amount_list, None, comment)
 
 
+def create_raw_transaction(unspent_list, send_dict, change_address=None):
+    input_amount = 0
+    input_list = []
+    for unspent in unspent_list:
+        input_txid = unspent['txid']
+        vout = unspent['vout']
+        amount = unspent['amount']
+        input_amount += amount
+        a_input = {'"txid"': '"{}"'.format(input_txid), '"vout"': vout}
+        input_list.append(a_input)
+
+    fee = ((len(unspent_list) * 180 + (len(send_dict) + 1) * 34 + 10 + 40) / 1024) * 0.000015
+    fee = util.get_precision(fee, 8)
+    print("Raw Fee: ", fee)
+    out_dict = {}
+
+    total_send_amount = 0
+    for address in send_dict:
+        send_amount = send_dict[address]
+        send_amount = util.get_precision(send_amount, 8)
+        total_send_amount += send_amount
+        key = '"{}"'.format(address)
+        out_dict[key] = send_amount
+
+    total_send_amount = util.get_precision(total_send_amount, 8)
+    change_amount = input_amount - total_send_amount - fee
+    change_amount = util.get_precision(change_amount, 8)
+
+    print("Input Amount: ", input_amount, "Send Amount: ", total_send_amount, "Change Amount: ", change_amount, "fee: ",
+          fee)
+
+    if change_amount < 0:
+        print("No enough money to send!")
+        return -1
+
+    if change_address is None:
+        key = '"{}"'.format(change_address)
+        out_dict[key] = change_amount
+
+    txid_json_str = json.dumps(input_list)
+    output_json_str = json.dumps(out_dict)
+
+    command = 'createrawtransaction "{}" "{}"'.format(txid_json_str, output_json_str)
+    return do_command(command)
+
+
+def sign_raw_transaction(raw_transaction_hash):
+    command = 'signrawtransaction "{}"'.format(raw_transaction_hash)
+    result = do_command(command)
+    if result == -1:
+        return -1
+    else:
+        return json.loads(result)
+
+
+def send_raw_transaction(signed_raw_transaction_hex):
+    command = 'sendrawtransaction "{}"'.format(signed_raw_transaction_hex)
+    return do_command(command)
+
+
 def send_unspent_to_address(unspent, to_address):
     input_txid = unspent['txid']
     vout = unspent['vout']
@@ -367,6 +428,86 @@ def send_unspent_to_address(unspent, to_address):
     return result
 
 
+def send_unspent_list_to_address(unspent_list, to_address):
+    send_amount = 0
+    input_list = []
+    for unspent in unspent_list:
+        input_txid = unspent['txid']
+        vout = unspent['vout']
+        amount = unspent['amount']
+        send_amount += amount
+        a_input = {'"txid"': '"{}"'.format(input_txid), '"vout"': vout}
+        input_list.append(a_input)
+
+    fee = ((len(unspent_list) * 180 + 1 * 34 + 10 + 40) / 1024) * 0.000015
+    fee = util.get_precision(fee, 8)
+    send_amount -= fee
+    send_amount = util.get_precision(send_amount, 8)
+
+    output_dict = {'"{}"'.format(to_address): send_amount}
+
+    txid_json_str = json.dumps(input_list)
+    output_json_str = json.dumps(output_dict)
+
+    command = 'createrawtransaction "{}" "{}"'.format(txid_json_str, output_json_str)
+
+    # create raw transaction
+    result = do_command(command)
+    if result == -1:
+        print("Send unspent list to address faild at Create Raw Transaction Command!")
+        return -1
+
+    # sign raw transaction
+    command = 'signrawtransaction "{}"'.format(result)
+    result = do_command(command)
+    if result == -1:
+        print("Send unspent list to address faild at Sign Raw Transaction Command!")
+        return -1
+
+    result = json.loads(result)
+
+    # send raw transaction
+    command = 'sendrawtransaction "{}"'.format(result['hex'])
+    result = do_command(command)
+
+    if result != -1:
+        print("Input count: {}".format(len(unspent_list)))
+        print(result, send_amount, '->', to_address, "fee: {}".format(fee))
+
+    return result
+
+
+def from_unspent_list_send_to_many(unspent_list, send_dict, change_address):
+    raw_transaction_hash = create_raw_transaction(unspent_list, send_dict, change_address)
+    if raw_transaction_hash != -1:
+        signed_raw_transaction = sign_raw_transaction(raw_transaction_hash)
+        print("Sign result: \n", signed_raw_transaction)
+        if signed_raw_transaction != -1:
+            signed_raw_transaction_hex = signed_raw_transaction['hex']
+            send_txid = send_raw_transaction(signed_raw_transaction_hex)
+            print("result txid:\n", send_txid)
+        else:
+            print("Signed raw transaction faild!")
+    else:
+        print("Create raw transaction faild")
+
+
+def list_all_address_balance():
+    unspent_list = get_unspent_list()
+    total_balance = 0.0
+    for unspent in unspent_list:
+        input_txid = unspent['txid']
+        address = unspent['address']
+        balance = unspent['amount']
+        total_balance += balance
+        print(input_txid, address, balance)
+
+    print("\n")
+    print("Unspent Count: ", len(unspent_list))
+    print("All balance: ", total_balance)
+
+
+
 
 # TODO: 待测试
 # 1. 使用代码瞬间转入多笔
@@ -393,6 +534,10 @@ print(result)
 #main_address = get_account_address("main")
 #to_address = "GKQxy9ZfaqCbqhvn6Jxt5LuLY48SRfYMHo"
 bank_address = "GaVMbZ755ie3b39Au3pi9LkFd2pGG4mU9a"
+
+
+
+
 
 
 #result = send_to_address(from_address, to_address, 2.0, from_address, "Comment")
@@ -440,6 +585,8 @@ for x in range(500):
         send_unspent_to_address(unspent, bank_address)
 '''
 
+
+'''
 unspent_list = get_unspent_list()
 unspent_count = 0
 for unspent in unspent_list:
@@ -447,3 +594,54 @@ for unspent in unspent_list:
     unspent_count += 1
 
 print("Unspent Count: ", unspent_count)
+print("\n")
+
+result = send_unspent_list_to_address(unspent_list, bank_address)
+
+print("Result: \n", result)
+'''
+
+'''
+unspent_list = get_unspent_list_by_address("GQAuXY5SyZMNqqRcCCSJkQG22BTcYQzaP4")
+send_dict = {"GeJajKMpAirXdYEeWEHQDJtSfDv6F9p8a6":2.0, "GYatfDCWQDPFJHMWsCLy2rcvN1RoZ5xNg8": 3.0}
+
+'''
+
+
+
+'''
+
+# generate many address
+send_dict = {}
+for x in range(1001):
+    account_name = "sub_{}".format(x)
+    address = get_account_address(account_name)
+    send_dict[address] = 3.0
+    #print(account_name, address)
+
+print("Construct send dict OK!")
+
+unspent_list = get_unspent_list()
+
+print("Construct unspent list OK!")
+
+from_unspent_list_send_to_many(unspent_list, send_dict, bank_address)
+'''
+
+#list_all_address_balance()
+
+input_unspent_list = []
+for x in range(1001):
+    account_name = "sub_{}".format(x)
+    address = get_account_address(account_name)
+    unspent_list = get_unspent_list_by_address(address)
+    input_unspent_list += unspent_list
+
+to_address = "GaVMbZ755ie3b39Au3pi9LkFd2pGG4mU9a"
+
+send_unspent_list_to_address(input_unspent_list, to_address)
+
+
+# 2018.09.14 00:22
+# 测试失败，因为一次发送的输入为1000个，太多了，接下来要测试一下使用 RPC 是否可以，如果 RPC 也不可以，那就减少
+# 一次发送的交易量
