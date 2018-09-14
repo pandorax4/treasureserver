@@ -34,15 +34,22 @@ def timestamp2utctime(timestamp):
 
 
 def get_precision(value, precision):
-    if precision <= 0:
-        return int(float(value))
+    if value < 0:
+        sign = -1
+    else:
+        sign = 1
+
+    value = abs(float(value))
+
+    #if precision <= 0:
+     #   return int(float(value))
 
     if precision > 20:
         tmpPrecision = precision + 10
     else:
         tmpPrecision = 20
 
-    value = float(value)
+    value = abs(float(value))
     decimalStr = '0.' + '0' * tmpPrecision
     valueStr = str(Decimal(value).quantize(Decimal(decimalStr)))
 
@@ -52,4 +59,4 @@ def get_precision(value, precision):
     resultValueStr = integerPart + "." + decimalPart
     resultValue = float(resultValueStr)
 
-    return resultValue
+    return resultValue * sign
