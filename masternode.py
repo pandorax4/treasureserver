@@ -2,6 +2,7 @@ import requests
 import json
 import time
 import threading
+from win10toast import ToastNotifier
 
 mn_account = {
     "mn01": "GaZVcUBuuMPbdqhf6uoR85vkVXYPfcpiLK",
@@ -76,8 +77,13 @@ def on_got_balance(mn_name, address, balance):
     balance_dict[mn_name] = int(balance - 10000)
 
 
-balance_dict = {}
+def show_message(msg):
+    toaster = ToastNotifier()
+    toaster.show_toast("GeekCash Masternode", msg, duration=5)
 
+
+balance_dict = {}
+last_total_reward = -1
 
 while True:
     try:
@@ -97,8 +103,24 @@ while True:
         reward = 0
         for key in balance_dict:
             reward += balance_dict[key]
+
         print("Total Reward: ", reward)
-        time.sleep(3.0)
+        if reward != last_total_reward:
+            msg = ""
+            if last_total_reward > 0:
+                new_income = reward - last_total_reward
+            else:
+                new_income = 0
+            last_total_reward = reward
+
+            if new_income > 0:
+                msg += "Total new income: {}\n".format(new_income)
+
+            msg += "Total Reward: {}".format(reward)
+
+            show_message(msg)
     except:
         pass
     time.sleep(2.0)
+
+
