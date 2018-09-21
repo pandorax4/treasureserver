@@ -41,6 +41,9 @@ def get_precision(value, precision):
 
     value = abs(float(value))
 
+    if value == 0.0:
+        return value
+
     #if precision <= 0:
      #   return int(float(value))
 
@@ -49,7 +52,6 @@ def get_precision(value, precision):
     else:
         tmpPrecision = 20
 
-    value = abs(float(value))
     decimalStr = '0.' + '0' * tmpPrecision
     valueStr = str(Decimal(value).quantize(Decimal(decimalStr)))
 

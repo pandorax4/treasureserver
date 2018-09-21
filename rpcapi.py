@@ -5,7 +5,6 @@ import json
 rpc_user = "NiPEL9gATxuo"
 rpc_password = "2h4GvkQnWCqXmAnYBaucRe8Ik5d5g7TB"
 url = "http://{}:{}@127.0.0.1:6888".format(rpc_user, rpc_password)
-print("Url: ", url)
 # rpc_user and rpc_password are set in the bitcoin.conf file
 rpc = AuthServiceProxy(url)
 
@@ -88,19 +87,23 @@ def send_to_many_from_unspent_list(unspent_list, to_dict, change_address):
     print("Balance: {}, send: {}, fee: {}, out_txid: {}".format(total_balance, total_send, fee, out_txid))
 
 
-'''
-send_dict = {}
-for x in range(1001):
-    account_name = "sub_{}".format(x)
-    address = rpc.getaccountaddress(account_name)
-    send_dict[address] = 1.0
-
-unspent_list = rpc.listunspent()
-change_address = "GdKLkjAoWLfP169x5b4AsKkXaABsaGbUJp"
-send_to_many_from_unspent_list(unspent_list, send_dict, change_address)
-'''
+def get_block_hash(_block_height):
+    block_hash = rpc.getblockhash(_block_height)
+    return block_hash
 
 
+def get_current_block_height():
+    return rpc.getblockcount()
+
+
+def get_block_height_nonce_timestamp_by_hash(_block_hash):
+    block_info = rpc.getblockheader(_block_hash)
+    return block_info['height'], block_info['nonce'], block_info['time']
+
+
+def get_block_height_nonce_timestamp_by_height(_block_height):
+    block_hash = get_block_hash(_block_height)
+    return get_block_height_nonce_timestamp_by_hash(block_hash)
 
 """
 min_conf = 0
