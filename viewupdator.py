@@ -8,10 +8,16 @@
 
 import db
 
+view_root = "../"
+
 
 # 生成每一轮小赌注详情页（包含每一个下注）
 def generate_small_settled_bet_detail_page(_round_list):
-    pass
+    # TODO: read html page template
+    for game_round in _round_list:
+        bet_list = db.get_bet_list_by_round(game_round)
+        html_content = ""
+        page_path = "{}{}.html".format(view_root, game_round)
 
 
 # 生成每一轮中赌注详情页（包含每一个下注）

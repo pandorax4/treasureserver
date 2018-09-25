@@ -61,6 +61,11 @@ def get_unsettle_bet_list(_bet_level):
     return unsettle_bet_list
 
 
+def get_bet_list_by_round(_game_round):
+    bet_list = DBBet.select().where(DBBet.game_round == _game_round)
+    return bet_list
+
+
 def save_new_bet_list(_bet_list, _bet_level):
     if _bet_list is None or len(_bet_list) == 0:
         return
