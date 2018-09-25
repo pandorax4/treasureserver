@@ -18,8 +18,10 @@ class DBBetRound(Model):
     loser_count = IntegerField()
     total_bet_amount = IntegerField()
     total_reward = IntegerField()
+    dev_reward = IntegerField()
     start_block = IntegerField()
     settled_block = IntegerField()
+    created_at = DateTimeField(default=datetime.datetime.now())
 
     class Meta:
         database = db_settled
@@ -100,6 +102,27 @@ def get_last_game_round_number(_bet_level):
         return 0
     else:
         print(result.game_round)
+
+
+def save_settled_header_data(_bet_round, _bet_level, _bet_count, _winer_count,
+                             _loser_count, _total_bet_amount, _total_reward,
+                             _dev_reward, _start_block, _settled_block):
+    DBBetRound.Create(
+        bet_round=_bet_round,
+        bet_level=_bet_level,
+        bet_count=_bet_count,
+        winer_count=_winer_count,
+        loser_count=_loser_count,
+        total_bet_amount=_total_bet_amount,
+        total_reward=_total_reward,
+        dev_reward=_dev_reward,
+        start_block=_start_block,
+        settled_block=_settled_block
+    )
+
+
+def get_all_settled_header_data():
+    return DBBetRound.select()
 
 
 def init_db():

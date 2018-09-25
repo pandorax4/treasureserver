@@ -9,10 +9,55 @@
 import db
 
 
-def update_view(_small_list, _big_list, _large_list):
+# 生成每一轮小赌注详情页（包含每一个下注）
+def generate_small_settled_bet_detail_page(_round_list):
     pass
 
 
-# 强制更新所有View，根据数据库中的数据，会比较慢
-def update_view_from_database():
+# 生成每一轮中赌注详情页（包含每一个下注）
+def generate_big_settled_bet_detail_page(_round_list):
+    pass
+
+
+# 生成每一轮大赌注详情页（包含每一个下注）
+def generate_large_settled_bet_detail_page(_round_list):
+    pass
+
+
+# 生成小赌注历史汇总页
+def generate_small_settled_header_page():
+    pass
+
+
+# 生成中赌注历史汇总页
+def generate_big_settled_header_page():
+    pass
+
+
+# 生成大赌注历史汇总页
+def generate_large_settled_header_page():
+    pass
+
+
+# 生成本轮游戏（未结算）详情页（包含每一个下注）
+def generate_current_bet_round_detail_page():
+    pass
+
+
+# 生成小赌注主页（附带当前轮未结算信息）
+def generate_small_bet_index_page():
+    pass
+
+
+# 生成中赌注主页（附带当前轮未结算信息）
+def generate_big_bet_index_page():
+    pass
+
+
+# 生成大赌注主页（附带当前轮未结算信息）
+def generate_large_bet_index_page():
+    pass
+
+
+def update_view(_small_settled_round_list, _big_settled_round_list, _large_settled_round_list):
     pass

@@ -236,11 +236,30 @@ def step2_try_settle_bets(_curr_block_height, _bet_level):
             last_game_round = db.get_last_game_round_number(_bet_level)
             curr_game_round = last_game_round + 1
             settled_game_round_list.append(curr_game_round)
+
+            min_join_block = -1
+            max_join_block = -1
             for dbbet in settled_bet_list:
                 dbbet.game_round = curr_game_round
+                if min_join_block < 0 or dbbet.join_block_height < min_join_block:
+                    min_join_block = dbbet.join_block_height
+                if max_join_block < 0 or dbbet.join_block_height > max_join_block:
+                    max_join_block = dbbet.join_block_height
 
             db.save_settlement_bet_list(settled_bet_list)
-            return settled_game_round_list
+            db.save_settled_header_data(
+                curr_game_round,
+                _bet_level,
+                len(settled_bet_list),
+                len(winer_list),
+                len(loser_list),
+                total_winer_amount + total_loser_amount,
+                total_loser_amount,
+                dev_reward,
+                min_join_block,
+                max_join_block,
+            )
+    return settled_game_round_list
 
 
 def on_block_height_changed(_curr_block_height):
