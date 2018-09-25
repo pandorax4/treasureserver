@@ -1,7 +1,7 @@
-import geekcashapi as api
+from old import geekcashapi as api
 import os
 import json
-from util import log
+from roulette import log
 import sys
 
 game_start_block_height = 180000

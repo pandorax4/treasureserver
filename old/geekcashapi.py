@@ -1,6 +1,6 @@
 import json
 import os
-from util import log
+from roulette import log
 import util
 
 command_prefix = 'gcli'

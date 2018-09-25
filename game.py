@@ -1,226 +1,199 @@
-
-import geekcashapi as api
+import rpcapi as api
 import time
-from util import log
+import db
 import util
-import model
-import datacenter
+import datetime
 
-fee = 0.05
-rawdata_path = '../rawdata/{0}.json'
-commit_file_curr_bets = '../pandorax4.github.io/curr_bets.json'
-last_update_view_record_file = '_last_view_block'
-bet_view_path = '../betview/{0}.json'
-is_updating_view = False
-last_collect_balance_block_height = -1
-last_update_view_timestamp = -1
-
-def get_account_address_by_number(number):
-    s_number = str(number)
-    return model.account_addresses['account_' + s_number]
+dev_reward_account = "dev_reward"
+bet_account_name_prefix = "bet_"
+bet_address_dict = {}   # account - address
+bet_address_number_dict = {}    # address - bet number
+dev_reward_address = ""
+prev_block_height = -1
+dev_reward_percentage = 0.05
 
 
-def get_sum_address():
-    return model.account_addresses['sum']
-    
-
-def make_sure_network_updated():
-    same_count = 0
-    last_height = api.get_curr_blockchain_height()
-    time.sleep(1)
-    while True:
-        curr_height = api.get_curr_blockchain_height()
-        if curr_height == last_height and curr_height != 0:
-            same_count += 1
-        else:
-            last_height = curr_height
-            same_count = 0
-
-        if same_count >= 10:
-            log('Blockchain update OK!')
-            break
-
-        log('Sync Block {}'.format(curr_height))
-        time.sleep(1)
+def get_bet_address(_number):
+	account_name = "{}{}".format(bet_account_name_prefix, _number)
+	return bet_address_dict.get(account_name, None)
 
 
-# ------------------------------- About Game Logic -------------------------------
-
-def save_raw_unspent_data_to_json(unspent_data_dict, curr_block_height):
-    # save raw unspent data
-    start_time = time.time()
-    raw_unspent_json_str = util.get_format_json(unspent_data_dict)
-    raw_unspent_save_file = rawdata_path.format(curr_block_height)
-    datacenter.write_data_to_file(raw_unspent_save_file,raw_unspent_json_str)
-    end_time = time.time()
-    print('Save raw unspent data used: {0}'.format(end_time - start_time))
-
-
-def save_unspent_data_to_database(bet_list):
-    start_time = time.time()
-    datacenter.save_bet_data(bet_list)
-    end_time = time.time()
-    print('Construct bet list used: {0}'.format(end_time - start_time))
-
-
-def try_collect_all_balance(bet_list, curr_block_height):
-    """
-    1. 若 unspent_list 超过 30 则进行一次资金汇集
-    2. 若 unspent_list 中有的块结果已出，则进行一次资金汇集
-    """
-    to_collect = False
-    if len(bet_list) >= 30:
-        to_collect = True
-    else:
-        for bet in bet_list:
-            if curr_block_height >= bet.bet_block_height:
-                to_collect = True
-                break
-    
-    if to_collect:
-        model.collect_balance(curr_block_height)
-
-
-def try_closing_bets(curr_block_height):
-    start_time = time.time()
-    print('Star Closing Process ...')
-    unclosing_dbbet_dict = datacenter.get_unclosing_dbbet_dict()
-    unclosing_bet_block_set = set()   # 需要更新到View的
-    for bet_block_height in unclosing_dbbet_dict:
-        unclosing_bet_block_set.add(bet_block_height)
-
-        if curr_block_height > bet_block_height:
-            unclosing_dbbet_list = unclosing_dbbet_dict[bet_block_height]
-
-            win_player_count = 0
-            lose_player_count = 0
-            total_bet_amount = 0.0
-            total_win_bet_amount = 0.0
-            total_lose_bet_amount = 0.0
-
-            bet_block_hash, bet_block_timestamp, nonce = api.get_block_hash_timestamp_nonce_by_height(bet_block_height)
-            last_nonce_digit = int(str(nonce)[-1])
-            
-            # update bet block info
-            for dbbet in unclosing_dbbet_list:
-                dbbet.bet_block_hash = bet_block_hash
-                dbbet.bet_block_timestamp = bet_block_timestamp
-                dbbet.bet_block_nonce = nonce
-
-                total_bet_amount += dbbet.bet_amount
-
-                if dbbet.bet_nonce_last_digit == last_nonce_digit:
-                    # win
-                    dbbet.bet_state = 1
-                    win_player_count += 1
-                    total_win_bet_amount += dbbet.bet_amount
-                else:
-                    dbbet.bet_state = 0
-                    lose_player_count += 1
-                    total_lose_bet_amount += dbbet.bet_amount
-
-            bonus = total_lose_bet_amount * (1.0 - fee)
-            # calculate payment
-            for dbbet in unclosing_dbbet_list:
-                if dbbet.bet_state == 1:
-                    bet_amount = dbbet.bet_amount
-                    bet_percentage = bet_amount / total_win_bet_amount
-                    reward_amount = bonus * bet_percentage
-                    dbbet.reward_amount = reward_amount
-                    dbbet.payment_state = 0
-            datacenter.update_dbbet_list(unclosing_dbbet_list)
-    end_time = time.time()
-    print('Closing Process End! used: ', (end_time - start_time))
-    return unclosing_bet_block_set
-
-
-def try_pay_winers(curr_block_height):
-    """
-    检查资金库，若资金足够支付所有需要支付的资金，则进行支付，否则等下一轮
-    :param curr_block_height
-    :return:
-    """
-    bet_list = datacenter.get_need_pay_dbbet_list()
-    paied_block_set = set()
-    address_list = []
-    amount_list = []
-    for bet in bet_list:
-        address_list.append(bet.payment_address)
-        amount_list.append(bet.reward_amount + bet.bet_amount)
-
-        paied_block_set.add(bet.bet_block_height)
-
-    pay_reward_txid = model.pay_reward(address_list, amount_list)
-
-    if pay_reward_txid != -1:
-        for bet in bet_list:
-            bet.payment_txid = pay_reward_txid
-            bet.payment_state = 1
-        datacenter.update_dbbet_list(bet_list)
-    else:
-        print('No enough money to pay at block {0}, wait next block!'.format(curr_block_height))
-    return paied_block_set
+def init_addresses():
+	global dev_reward_address
+	dev_reward_address = api.get_or_create_address(dev_reward_account)
+	for x in range(10):
+		account_name = "{}{}".format(bet_account_name_prefix, x)
+		address = api.get_or_create_address(account_name)
+		bet_address_dict[account_name] = address
+		bet_address_number_dict[address] = x
+		print(account_name, address)
 
 
 
-def try_update_view(block_set):
-    curr_timestamp = int(time.time())
-    pass
+
+def step1_try_save_bet_list(_curr_block_height):
+	bet_list = []
+	for account_name in bet_address_dict:
+		bet_address = bet_address_dict[account_name]
+		unspent_list = api.get_unspent_list_by_address(bet_address)
+		if len(unspent_list) > 0:
+			for unspent in unspent_list:
+				bet_data = {}
+
+				bet_number = bet_address_number_dict.get(bet_address, None)
+				if bet_number is None:
+					print("Fatal Error, get bet number error! {}".format(bet_address))
+					return
+
+				unspent_txid = unspent["txid"]
+				join_block_height, join_block_hash, join_block_timestamp = \
+					api.get_block_height_hash_timestamp_by_txid(unspent["txid"])
+
+				input_address_list = api.get_input_addresses(unspent_txid)
+				if len(input_address_list) == 0:
+					print("Fatal Error, get input address faild! {}".format(unspent_txid))
+					return
+
+				bet_data["join_txid"] = unspent_txid
+				bet_data["join_block_height"] = join_block_height
+				bet_data["join_block_hash"] = join_block_hash
+				bet_data["join_block_timestamp"] = join_block_timestamp
+				bet_data["bet_number"] = bet_number
+				bet_data["bet_address"] = unspent["address"]
+				bet_data["bet_amount"] = util.get_precision(float(unspent["amount"]), 8)
+				bet_data["payment_address"] = input_address_list[0]
+				bet_list.append(bet_data)
+	db.save_new_bet_list(bet_list)
 
 
-def on_block_height_changed(prev_block_height, curr_block_height):
-    log('On block height changed: {0} -> {1}'.format(prev_block_height, curr_block_height))
-    
-    # !!!! NOTE: 确保这个过程不会中断，否则有可能会漏掉玩家转入的币
-    
-    unspent_data_dict = model.collect_unspent_data()
-    bet_list = model.construct_bets(unspent_data_dict)
+def step2_try_settle_bets(_curr_block_height):
+	unsettle_bet_list = db.get_unsettle_bet_list()
 
-    # 1. 将当前块未花费的数据保存起来
-    save_raw_unspent_data_to_json(unspent_data_dict, curr_block_height)
+	if unsettle_bet_list is None or len(unsettle_bet_list) == 0:
+		return
 
-    # 2. 将每一个地址的 unspent 数据存入数据库
-    save_unspent_data_to_database(bet_list)
+	min_block_height = -1
+	max_block_height = -1
+	bet_dict = {}
 
-    # 3. 尝试资金汇集
-    try_collect_all_balance(bet_list, curr_block_height)
-    
-    # 4. 尝试结算下注
-    closing_block_set = try_closing_bets(curr_block_height)
+	for bet in unsettle_bet_list:
+		#print(bet.join_txid, bet.join_block_hash, bet.bet_number)
+		if min_block_height < 0 or bet.join_block_height < min_block_height:
+			min_block_height = bet.join_block_height
 
-    # 5. 尝试支付赢家奖金
-    paied_block_set = try_pay_winers(curr_block_height)
+		if max_block_height < 0 or bet.join_block_height > max_block_height:
+			max_block_height = bet.join_block_height
 
-    # 算出哪一些下注块的信息需要更新
-    need_update_view_block_set = closing_block_set | paied_block_set
-
-    # 尝试更新网页
-    try_update_view(need_update_view_block_set)
+		bet_dict[bet.join_txid] = bet
 
 
-def main_game_loop():
-    print(' Game Start '.center(50, '='))
-    last_block_height = api.get_curr_blockchain_height()
-    print('Now Block {0}'.format(last_block_height))
-    while True:
-        if last_block_height == -1:
-            last_block_height = api.get_curr_blockchain_height()
-        else:
-            curr_block_height = api.get_curr_blockchain_height()
-            if curr_block_height == -1:
-                log('Get current blockchain height faild!')
-            else:
-                if curr_block_height != last_block_height:
-                    prev_block_height = last_block_height
-                    last_block_height = curr_block_height
-                    on_block_height_changed(prev_block_height, curr_block_height)
+	if _curr_block_height == min_block_height:
+		return
 
-        time.sleep(1)
+	for block in range(min_block_height, _curr_block_height + 1):
+		check_block = block + 1
+		if check_block > _curr_block_height:
+			break
+		block_hash, block_nonce, block_timestamp = api.get_block_hash_nonce_timestamp_by_height(check_block)
+		nonce_last_number = int(str(block_nonce)[-1])
+		selected_bet_list = []
+		has_loser = False
+		has_winer = False
+		print("Check Block: ", block, "Nonce: ", block_nonce)
+		for txid in bet_dict:
+			dbbet = bet_dict[txid]
+			if dbbet.join_block_height < check_block:
+				selected_bet_list.append(dbbet)
+				if dbbet.bet_number == nonce_last_number:
+					has_winer = True
+					print("Winer: ", dbbet.join_txid, "Join Height: ", dbbet.join_block_height, "address: ", dbbet.payment_address, "bet number: ", dbbet.bet_number)
+				else:
+					has_loser = True
+					print("Loser: ", dbbet.join_txid, "Join Height: ", dbbet.join_block_height, "address: ", dbbet.payment_address, "bet number: ", dbbet.bet_number)
+
+		print("Has winer: ", has_winer, "Has Loaser: ", has_loser)
+
+		if has_winer and has_loser:
+			winer_list = []
+			loser_list = []
+			total_loser_amount = 0.0
+			total_winer_amount = 0.0
+			for dbbet in selected_bet_list:
+				if dbbet.bet_number == nonce_last_number:
+					winer_list.append(dbbet)
+					total_winer_amount += dbbet.bet_amount
+					dbbet.bet_state = 1
+				else:
+					loser_list.append(dbbet)
+					total_loser_amount += dbbet.bet_amount
+					dbbet.bet_state = 0
+
+				dbbet.settlement_block_height = check_block
+				dbbet.settlement_block_hash = block_hash
+				dbbet.settlement_block_nonce = block_nonce
+
+				del bet_dict[dbbet.join_txid]
+
+			print("Winer Count: ", len(winer_list), "Loser Count: ", len(loser_list))
+			print("Total winer amount: ", total_winer_amount, "Total loser amount: ", total_loser_amount)
+			total_reward = total_loser_amount * (1 - dev_reward_percentage)
+			total_reward = util.get_precision(total_reward, 8)
+			dev_reward = total_loser_amount - total_reward
+			print("Total winer reward: ", total_reward, "dev reward: ", dev_reward)
+
+			to_dict = {}
+			# pay to winers
+			for dbbet in winer_list:
+				reward_percentage = dbbet.bet_amount / total_winer_amount
+				reward_percentage = util.get_precision(reward_percentage, 3)
+				reward_amount = total_reward * reward_percentage
+				reward_amount = util.get_precision(reward_amount, 8)
+				dbbet.reward_amount = reward_amount
+				pay_amount = reward_amount + dbbet.bet_amount
+				pay_amount = util.get_precision(pay_amount, 8)
+				to_dict[dbbet.payment_address] = pay_amount
+				print("Txid: ", dbbet.join_txid, "bet amount: ",dbbet.bet_amount, "reward %: ", reward_percentage, "reward: ", reward_amount, "payment: ", pay_amount)
+
+			pay_input_txid_list = []
+			for dbbet in loser_list:
+				pay_input_txid_list.append(dbbet.join_txid)
+
+			pay_reward_txid = api.send_to_many_from_input_txid_list(pay_input_txid_list, to_dict, dev_reward_address)
+			settled_bet_list = []
+			for dbbet in winer_list:
+				dbbet.payment_state = 1
+				dbbet.reward_txid = pay_reward_txid
+				dbbet.update_at = datetime.datetime.now()
+				settled_bet_list.append(dbbet)
+
+			for dbbet in loser_list:
+				dbbet.update_at = datetime.datetime.now()
+				settled_bet_list.append(dbbet)
+
+			db.save_settlement_bet_list(settled_bet_list)
 
 
-if __name__ == '__main__':
-    datacenter.init_db()
-    make_sure_network_updated()
-    model.init_bet_addresses()
-    main_game_loop()
+def on_block_height_changed(_curr_block_height):
+	print("On Block Height Changed: ", _curr_block_height)
+	step1_try_save_bet_list(_curr_block_height)
+	step2_try_settle_bets(_curr_block_height)
 
+
+def game_loop():
+	global prev_block_height
+	while True:
+		#try:
+		curr_block_height = api.get_current_block_height()
+		print("Current Block Height: ", curr_block_height)
+		if curr_block_height != prev_block_height:
+			prev_block_height = curr_block_height
+			on_block_height_changed(curr_block_height)
+		#except Exception as _ex:
+		#	print("Exception: ", _ex)
+		#	time.sleep(5)
+		time.sleep(1)
+
+
+init_addresses()
+db.init_db()
+game_loop()

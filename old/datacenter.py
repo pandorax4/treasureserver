@@ -1,6 +1,6 @@
 from peewee import *
 import datetime
-from util import log
+from roulette import log
 import util
 
 db = SqliteDatabase('../db/bets.db')
