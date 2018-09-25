@@ -65,5 +65,22 @@ def generate_large_bet_index_page():
     pass
 
 
-def update_view(_small_settled_round_list, _big_settled_round_list, _large_settled_round_list):
+def push_page():
     pass
+
+
+def update_view(_small_settled_round_list, _big_settled_round_list, _large_settled_round_list):
+    generate_small_settled_bet_detail_page(_small_settled_round_list)
+    generate_big_settled_bet_detail_page(_big_settled_round_list)
+    generate_large_settled_bet_detail_page(_large_settled_round_list)
+    generate_small_settled_header_page()
+    generate_big_settled_header_page()
+    generate_large_settled_header_page()
+    generate_current_bet_round_detail_page()
+    generate_small_bet_index_page()
+    generate_big_bet_index_page()
+    generate_large_bet_index_page()
+    push_page()
+
+
+
