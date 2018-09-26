@@ -1,0 +1,80 @@
+
+
+.content-side{
+    border:1px solid red;
+    width: 512px;
+    height:800px;
+    float:left;
+    background:#181B2A;
+    /*#1B1E2E 标题 */
+}
+
+.game-story{
+    border:1px solid red;
+    height:100px;
+}
+
+
+.bet-address{
+    /*border:1px solid red;*/
+    float:left;
+    margin-top:15px;
+    width:100%;
+    height:40px;
+    padding:5px;
+}
+
+.bet-address-number{
+    /*border:1px solid red;*/
+    float:left;
+    font-size:30px;
+}
+
+.bet-address-info{
+    /*border:1px solid red;*/
+    float:left;
+    font-size:14px;
+    margin-left:10px;
+}
+
+.bet-address-info div:nth-child(2){
+    /*font-weight: bold;*/
+
+}
+
+
+
+
+
+
+.bet-amount-menu{
+    border:1px solid red;
+    height:100px;
+}
+
+
+.bet-amount-menu-item{
+    float:left;
+}
+
+
+
+.curr-bet-info{
+    border:1px solid red;
+    width:100%;
+    height:200px;
+}
+
+
+.lucky-player{
+    border:1px solid red;
+    width:100%;
+    height:200px;
+}
+
+
+.bet-rules{
+    border:1px solid red;
+    width:100%;
+    height:200px;
+}

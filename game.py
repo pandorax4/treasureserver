@@ -4,9 +4,10 @@ import db
 import util
 import datetime
 import viewupdator
+import model
 
 dev_reward_account = "dev_reward"
-bet_account_name_prefix = "bet_"
+
 #bet_address_dict = {}  # account - address
 #bet_address_number_dict = {}  # address - bet number
 dev_reward_address = ""
@@ -14,17 +15,7 @@ prev_block_height = -1
 dev_reward_percentage = 0.05
 
 
-small_bet_account_name_prefix = "small_bet_"
-small_bet_address_dict = {}
-small_address_number_dict = {}
 
-big_bet_account_name_prefix = "big_bet_"
-big_bet_address_dict = {}
-big_address_number_dict = {}
-
-large_bet_account_name_prefix = "large_bet_"
-large_bet_address_dict = {}
-large_address_number_dict = {}
 
 bet_level_min_amount_dict = {
     1: 1000,
@@ -35,14 +26,14 @@ bet_level_min_amount_dict = {
 
 def get_bet_address(_number, _bet_level):
     if _bet_level == 1:
-        account_name = "{}{}".format(small_bet_account_name_prefix, _number)
-        return small_bet_address_dict.get(account_name, None)
+        account_name = "{}{}".format(model.small_bet_account_name_prefix, _number)
+        return model.small_bet_address_dict.get(account_name, None)
     if _bet_level == 2:
-        account_name = "{}{}".format(big_bet_account_name_prefix, _number)
-        return big_bet_address_dict.get(account_name, None)
+        account_name = "{}{}".format(model.big_bet_account_name_prefix, _number)
+        return model.big_bet_address_dict.get(account_name, None)
     if _bet_level == 3:
-        account_name = "{}{}".format(large_bet_account_name_prefix, _number)
-        return large_bet_address_dict.get(account_name, None)
+        account_name = "{}{}".format(model.large_bet_account_name_prefix, _number)
+        return model.large_bet_address_dict.get(account_name, None)
 
 
 def init_addresses():
@@ -50,38 +41,38 @@ def init_addresses():
     dev_reward_address = api.get_or_create_address(dev_reward_account)
     # init small addresses
     for x in range(10):
-        account_name = "{}{}".format(small_bet_account_name_prefix, x)
+        account_name = "{}{}".format(model.small_bet_account_name_prefix, x)
         address = api.get_or_create_address(account_name)
-        small_bet_address_dict[account_name] = address
-        small_address_number_dict[address] = x
+        model.small_bet_address_dict[account_name] = address
+        model.small_address_number_dict[address] = x
 
     # init big addresses
     for x in range(10):
-        account_name = "{}{}".format(big_bet_account_name_prefix, x)
+        account_name = "{}{}".format(model.big_bet_account_name_prefix, x)
         address = api.get_or_create_address(account_name)
-        big_bet_address_dict[account_name] = address
-        big_address_number_dict[address] = x
+        model.big_bet_address_dict[account_name] = address
+        model.big_address_number_dict[address] = x
 
     # init large addresses
     for x in range(10):
-        account_name = "{}{}".format(large_bet_account_name_prefix, x)
+        account_name = "{}{}".format(model.large_bet_account_name_prefix, x)
         address = api.get_or_create_address(account_name)
-        large_bet_address_dict[account_name] = address
-        large_address_number_dict[address] = x
+        model.large_bet_address_dict[account_name] = address
+        model.large_address_number_dict[address] = x
 
 
 def step1_try_save_bet_list(_curr_block_height, _bet_level):
     bet_list = []
 
     if _bet_level == 1:
-        bet_address_dict = small_bet_address_dict
-        bet_address_number_dict = small_address_number_dict
+        bet_address_dict = model.small_bet_address_dict
+        bet_address_number_dict = model.small_address_number_dict
     elif _bet_level == 2:
-        bet_address_dict = big_bet_address_dict
-        bet_address_number_dict = big_address_number_dict
+        bet_address_dict = model.big_bet_address_dict
+        bet_address_number_dict = model.big_address_number_dict
     elif _bet_level == 3:
-        bet_address_dict = large_bet_address_dict
-        bet_address_number_dict = large_address_number_dict
+        bet_address_dict = model.large_bet_address_dict
+        bet_address_number_dict = model.large_address_number_dict
     else:
         print("Error!, Wrong Diff Level: {}".format(_bet_level))
         return
@@ -249,6 +240,7 @@ def step2_try_settle_bets(_curr_block_height, _bet_level):
             db.save_settlement_bet_list(settled_bet_list)
             db.save_settled_header_data(
                 curr_game_round,
+	            nonce_last_number,
                 _bet_level,
                 len(settled_bet_list),
                 len(winer_list),

@@ -1,0 +1,36 @@
+.bet-item{
+    font-size:16px;
+}
+
+.bet-item span{
+    display:inline-block;
+    text-align: center;
+}
+
+.bet-item span:nth-child(1){
+    width:120px;
+}
+
+.bet-item span:nth-child(2){
+    width:200px;
+}
+
+.bet-item span:nth-child(3){
+    width:120px;
+}
+
+.bet-item span:nth-child(4){
+    width:120px;
+}
+
+.bet-item span:nth-child(5){
+    width:120px;
+}
+
+.bet-item span:nth-child(6){
+    width:120px;
+}
+
+.bet-lose{
+    color:red;
+}

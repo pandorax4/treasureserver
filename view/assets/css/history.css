@@ -1,0 +1,40 @@
+.game-item{
+
+}
+
+.game-item span{
+
+    display:inline-block;
+    width:70px;
+    text-align:center;
+}
+
+/* 开奖数字 */
+.game-item span:nth-child(1){
+    width:100px;
+}
+
+/* 下注金额 */
+.game-item span:nth-child(4){
+    width:100px;
+}
+
+.game-item span:nth-child(7){
+    width:100px;
+}
+
+.game-item span:nth-child(8){
+    width:80px;
+}
+
+.game-item span:nth-child(9){
+    width:80px;
+}
+
+.game-item span:nth-child(10){
+    width:80px;
+}
+
+.game-item span:nth-child(11){
+    width:120px;
+}

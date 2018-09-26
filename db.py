@@ -13,9 +13,10 @@ db_settled = SqliteDatabase(db_root + db_settled_name)
 
 class DBBetRound(Model):
     bet_round = IntegerField()
+    bet_number = IntegerField()
     bet_level = IntegerField()
     bet_count = IntegerField()
-    winer_count = IntegerField()
+    winner_count = IntegerField()
     loser_count = IntegerField()
     total_bet_amount = IntegerField()
     total_reward = IntegerField()
@@ -118,31 +119,76 @@ def save_settlement_bet_list(_dbbet_list):
 
 
 def get_last_game_round_number(_bet_level):
-    result = DBBet.select(fn.Max(DBBet.game_round)).where(DBBet.bet_level == _bet_level)
+    result = DBBet.select(fn.Max(DBBet.game_round)).where(DBBet.bet_level == _bet_level).scalar()
+    return result
+
+
+def get_curr_unsettle_game_round(_bet_level):
+    result = DBBet.select(fn.Max(DBBet.game_round)).where(DBBet.bet_level == _bet_level).scalar()
     if result is None:
+        result = 0
+    return result + 1
+
+
+def get_total_bet_count(_bet_level, _bet_number):
+    count = DBBet.select(fn.Count(DBBet.join_txid)).where(
+        DBBet.bet_level == _bet_level and DBBet.bet_number == _bet_number).scalar()
+    return count
+
+
+def get_total_bet_amount(_bet_level, _bet_number):
+    sum = DBBet.select(fn.SUM(DBBet.bet_amount)).where(
+        DBBet.bet_level == _bet_level and DBBet.bet_number == _bet_number).scalar()
+    if sum is None:
         return 0
     else:
-        print(result.game_round)
+        return sum
 
 
-def get_curr_unsettled_game_round(_bet_level):
-    result = DBBet.select(fn.Max(DBBet.game_round)).where(DBBet.bet_level == _bet_level).scalar()
-    print(result + 1)
+def get_bet_number_total_win_count(_bet_level, _bet_number):
+    count = DBBetRound.select(fn.Count(DBBetRound.bet_round)).where(
+        DBBetRound.bet_level == _bet_level and DBBetRound.bet_number == _bet_number).scalar()
+    return count
 
 
-def get_bet_count(_bet_level):
-    #result =
-    pass
+def get_curr_unsettle_count(_bet_level):
+    count = DBBet.select(fn.Count(DBBet.join_txid)).where(
+        DBBet.bet_level == _bet_level and DBBet.bet_state == -1
+    ).scalar()
+    return count
 
 
-def save_settled_header_data(_bet_round, _bet_level, _bet_count, _winer_count,
+def get_curr_unsettle_amount(_bet_level):
+    amount = DBBet.select(fn.SUM(DBBet.bet_amount)).where(
+        DBBet.bet_level == _bet_level and DBBet.bet_state == -1
+    ).scalar()
+    if amount is None:
+        return 0
+    return amount
+
+
+def get_bet_round_data(_bet_level, _bet_round):
+    bet_rounds = DBBetRound.select().where(
+        DBBetRound.bet_round == _bet_round and DBBetRound.bet_level == _bet_level)
+    if len(bet_rounds) > 0:
+        return bet_rounds[0]
+    return None
+
+
+
+
+
+
+
+def save_settled_header_data(_bet_round, _bet_number, _bet_level, _bet_count, _winner_count,
                              _loser_count, _total_bet_amount, _total_reward,
                              _dev_reward, _start_block, _settled_block):
     DBBetRound.Create(
         bet_round=_bet_round,
+        bet_number = _bet_number,
         bet_level=_bet_level,
         bet_count=_bet_count,
-        winer_count=_winer_count,
+        winner_count=_winner_count,
         loser_count=_loser_count,
         total_bet_amount=_total_bet_amount,
         total_reward=_total_reward,
@@ -198,11 +244,3 @@ def test_query():
     for p in lucky_players:
         print(p.bet_amount)
     """
-
-
-
-
-
-init_db()
-
-test_query()
