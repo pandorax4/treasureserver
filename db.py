@@ -193,7 +193,11 @@ def test_query():
     print(sum, type(sum))
     """
 
-    lucky_players = DBBet.select().where(DBBet.bet_level == 1).order_by()
+    """
+    lucky_players = DBBet.select().where(DBBet.bet_level == 1).order_by(DBBet.bet_amount.desc()).limit(3)
+    for p in lucky_players:
+        print(p.bet_amount)
+    """
 
 
 
