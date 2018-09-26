@@ -1,6 +1,7 @@
 from peewee import *
 import datetime
 import os
+import random
 
 db_root = "./db/"
 db_bet_name = "bets.db"
@@ -56,8 +57,23 @@ class DBBet(Model):
         database = db
 
 
+def _generate_test_bet_data():
+    for x in range(10):
+        DBBet.create(
+            join_txid="{}adedfdf45s4fds".format(x),
+            join_block_height=random.randint(10000,99999),
+            join_block_hash="{}545a4sd5f4a5sd4f5s5df4a5s4df".format(x),
+            join_block_timestamp=random.randint(10000000, 99999999),
+            bet_number=random.randint(0, 9),
+            bet_address="{}fdjwoerunnvasdfasdf".format(x),
+            bet_amount=random.randint(1000, 100000),
+            payment_address="{}fdjwonsdfasdfnvasdfasdf".format(x),
+            bet_level=random.randint(1, 3)
+        )
+
+
 def get_unsettle_bet_list(_bet_level):
-    unsettle_bet_list = DBBet.select().where(DBBet.bet_state == -1 and DBBet.diff_level == _bet_level)
+    unsettle_bet_list = DBBet.select().where(DBBet.bet_state == -1 and DBBet.bet_level == _bet_level)
     return unsettle_bet_list
 
 
@@ -109,6 +125,16 @@ def get_last_game_round_number(_bet_level):
         print(result.game_round)
 
 
+def get_curr_unsettled_game_round(_bet_level):
+    result = DBBet.select(fn.Max(DBBet.game_round)).where(DBBet.bet_level == _bet_level).scalar()
+    print(result + 1)
+
+
+def get_bet_count(_bet_level):
+    #result =
+    pass
+
+
 def save_settled_header_data(_bet_round, _bet_level, _bet_count, _winer_count,
                              _loser_count, _total_bet_amount, _total_reward,
                              _dev_reward, _start_block, _settled_block):
@@ -143,3 +169,36 @@ def init_db():
 
 def close_db():
     db.close()
+
+
+def test_query():
+    # result = DBBet.select(fn.Max(DBBet.game_round))
+    # print(len(result))
+    # print(result[0].bet_level)
+
+    """
+    result = DBBet.select(DBBet, fn.Max(DBBet.game_round))
+    print(type(result))
+    print(len(result))
+    print(type(result.get()))
+    """
+
+    """
+    count = DBBet.select(fn.Count(DBBet.join_txid)).where(DBBet.bet_level == 5).scalar()
+    print(count)
+    """
+
+    """
+    sum = DBBet.select(fn.SUM(DBBet.bet_amount)).where(DBBet.bet_level == 2).scalar()
+    print(sum, type(sum))
+    """
+
+    lucky_players = DBBet.select().where(DBBet.bet_level == 1).order_by()
+
+
+
+
+
+init_db()
+
+test_query()

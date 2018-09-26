@@ -1,0 +1,642 @@
+<html>
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.17/vue.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/purecss@0.6.1/build/pure-min.css"
+          integrity="sha384-CCTZv2q9I9m3UOxRLaJneXrrqKwUNOzZ6NGEUMwHtShDJ+nCoiXJCAgi05KfkLGY" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="../assets/css/index.css"/>
+    <link rel="stylesheet" type="text/css" href="../assets/css/common.css"/>
+</head>
+
+<body>
+
+<header>
+    <div class="header-title">
+        GeekCash Games
+    </div>
+
+    <div class="header-menu">
+        <span>Home</span>
+        <span>Rules</span>
+        <span>Buy</span>
+        <span>History</span>
+        <span>English | 中文</span>
+    </div>
+</header>
+
+<div class="content-box">
+
+    <div class="content-side">
+        <div class="game-story">
+            幸运轮盘，赢取大额 GeekCash
+        </div>
+
+        <!-- Small bet addresses box start -->
+        <div id="small-bet-address-box">
+
+            <div class="bet-address" id="small-address-0">
+                <div class="bet-address-number">
+                    0
+                </div>
+                <div class="bet-address-info">
+
+                    <div>
+                        总下注次数: {{small_bet_number_0_total_bet}}&nbsp;&nbsp;&nbsp;&nbsp;总下注金额: {{small_bet_number_0_total_bet_amount}}&nbsp;&nbsp;&nbsp;&nbsp;获胜次数: {{small_bet_number_0_win_count}}
+                    </div>
+
+                    <div>
+                        {{small_bet_number_0_address}}
+                    </div>
+                </div>
+            </div>
+
+            <div class="bet-address" id="small-address-1">
+                <div class="bet-address-number">
+                    1
+                </div>
+                <div class="bet-address-info">
+                    <div>
+                        总下注次数: {{small_bet_number_1_total_bet}}&nbsp;&nbsp;&nbsp;&nbsp;总下注金额: {{small_bet_number_1_total_bet_amount}}&nbsp;&nbsp;&nbsp;&nbsp;获胜次数: {{small_bet_number_1_win_count}}
+                    </div>
+
+                    <div>
+                        {{small_bet_number_1_address}}
+                    </div>
+                </div>
+            </div>
+
+            <div class="bet-address" id="small-address-2">
+                <div class="bet-address-number">
+                    2
+                </div>
+                <div class="bet-address-info">
+                    <div>
+                        总下注次数: {{small_bet_number_2_total_bet}}&nbsp;&nbsp;&nbsp;&nbsp;总下注金额: {{small_bet_number_2_total_bet_amount}}&nbsp;&nbsp;&nbsp;&nbsp;获胜次数: {{small_bet_number_2_win_count}}
+                    </div>
+
+                    <div>
+                        {{small_bet_number_2_address}}
+                    </div>
+                </div>
+            </div>
+
+            <div class="bet-address" id="small-address-3">
+                <div class="bet-address-number">
+                    3
+                </div>
+                <div class="bet-address-info">
+                    <div>
+                        总下注次数: {{small_bet_number_3_total_bet}}&nbsp;&nbsp;&nbsp;&nbsp;总下注金额: {{small_bet_number_3_total_bet_amount}}&nbsp;&nbsp;&nbsp;&nbsp;获胜次数: {{small_bet_number_3_win_count}}
+                    </div>
+
+                    <div>
+                        {{small_bet_number_3_address}}
+                    </div>
+                </div>
+            </div>
+
+            <div class="bet-address" id="small-address-4">
+                <div class="bet-address-number">
+                    4
+                </div>
+                <div class="bet-address-info">
+                    <div>
+                        总下注次数: {{small_bet_number_4_total_bet}}&nbsp;&nbsp;&nbsp;&nbsp;总下注金额: {{small_bet_number_4_total_bet_amount}}&nbsp;&nbsp;&nbsp;&nbsp;获胜次数: {{small_bet_number_4_win_count}}
+                    </div>
+
+                    <div>
+                        {{small_bet_number_4_address}}
+                    </div>
+                </div>
+            </div>
+
+            <div class="bet-address" id="small-address-5">
+                <div class="bet-address-number">
+                    5
+                </div>
+                <div class="bet-address-info">
+                    <div>
+                        总下注次数: {{small_bet_number_5_total_bet}}&nbsp;&nbsp;&nbsp;&nbsp;总下注金额: {{small_bet_number_5_total_bet_amount}}&nbsp;&nbsp;&nbsp;&nbsp;获胜次数: {{small_bet_number_5_win_count}}
+                    </div>
+
+                    <div>
+                        {{small_bet_number_5_address}}
+                    </div>
+                </div>
+            </div>
+
+            <div class="bet-address" id="small-address-6">
+                <div class="bet-address-number">
+                    6
+                </div>
+                <div class="bet-address-info">
+                    <div>
+                        总下注次数: {{small_bet_number_6_total_bet}}&nbsp;&nbsp;&nbsp;&nbsp;总下注金额: {{small_bet_number_6_total_bet_amount}}&nbsp;&nbsp;&nbsp;&nbsp;获胜次数: {{small_bet_number_6_win_count}}
+                    </div>
+
+                    <div>
+                        {{small_bet_number_6_address}}
+                    </div>
+                </div>
+            </div>
+
+            <div class="bet-address" id="small-address-7">
+                <div class="bet-address-number">
+                    7
+                </div>
+                <div class="bet-address-info">
+                    <div>
+                        总下注次数: {{small_bet_number_7_total_bet}}&nbsp;&nbsp;&nbsp;&nbsp;总下注金额: {{small_bet_number_7_total_bet_amount}}&nbsp;&nbsp;&nbsp;&nbsp;获胜次数: {{small_bet_number_7_win_count}}
+                    </div>
+
+                    <div>
+                        {{small_bet_number_7_address}}
+                    </div>
+                </div>
+            </div>
+
+            <div class="bet-address" id="small-address-8">
+                <div class="bet-address-number">
+                    8
+                </div>
+                <div class="bet-address-info">
+                    <div>
+                        总下注次数: {{small_bet_number_8_total_bet}}&nbsp;&nbsp;&nbsp;&nbsp;总下注金额: {{small_bet_number_8_total_bet_amount}}&nbsp;&nbsp;&nbsp;&nbsp;获胜次数: {{small_bet_number_8_win_count}}
+                    </div>
+
+                    <div>
+                        {{small_bet_number_8_address}}
+                    </div>
+                </div>
+            </div>
+
+            <div class="bet-address" id="small-address-9">
+                <div class="bet-address-number">
+                    9
+                </div>
+                <div class="bet-address-info">
+                    <div>
+                        总下注次数: {{small_bet_number_9_total_bet}}&nbsp;&nbsp;&nbsp;&nbsp;总下注金额: {{small_bet_number_9_total_bet_amount}}&nbsp;&nbsp;&nbsp;&nbsp;获胜次数: {{small_bet_number_9_win_count}}
+                    </div>
+
+                    <div>
+                        {{small_bet_number_9_address}}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Small bet addresses box end -->
+
+
+        <!-- big bet addresses box start -->
+        <div class="hide" id="big-bet-address-box">
+
+            <div class="bet-address" id="big-address-0">
+                <div class="bet-address-number">
+                    0
+                </div>
+                <div class="bet-address-info">
+                    <div>
+                        总下注次数: {{big_bet_number_0_total_bet}}&nbsp;&nbsp;&nbsp;&nbsp;总下注金额: {{big_bet_number_0_total_bet_amount}}&nbsp;&nbsp;&nbsp;&nbsp;获胜次数: {{big_bet_number_0_win_count}}
+                    </div>
+
+                    <div>
+                        {{big_bet_number_0_address}}
+                    </div>
+                </div>
+            </div>
+
+            <div class="bet-address" id="big-address-1">
+                <div class="bet-address-number">
+                    1
+                </div>
+                <div class="bet-address-info">
+                    <div>
+                        总下注次数: {{big_bet_number_1_total_bet}}&nbsp;&nbsp;&nbsp;&nbsp;总下注金额: {{big_bet_number_1_total_bet_amount}}&nbsp;&nbsp;&nbsp;&nbsp;获胜次数: {{big_bet_number_1_win_count}}
+                    </div>
+
+                    <div>
+                        {{big_bet_number_1_address}}
+                    </div>
+                </div>
+            </div>
+
+            <div class="bet-address" id="big-address-2">
+                <div class="bet-address-number">
+                    2
+                </div>
+                <div class="bet-address-info">
+                    <div>
+                        总下注次数: {{big_bet_number_2_total_bet}}&nbsp;&nbsp;&nbsp;&nbsp;总下注金额: {{big_bet_number_2_total_bet_amount}}&nbsp;&nbsp;&nbsp;&nbsp;获胜次数: {{big_bet_number_2_win_count}}
+                    </div>
+
+                    <div>
+                        {{big_bet_number_2_address}}
+                    </div>
+                </div>
+            </div>
+
+            <div class="bet-address" id="big-address-3">
+                <div class="bet-address-number">
+                    3
+                </div>
+                <div class="bet-address-info">
+                    <div>
+                        总下注次数: {{big_bet_number_3_total_bet}}&nbsp;&nbsp;&nbsp;&nbsp;总下注金额: {{big_bet_number_3_total_bet_amount}}&nbsp;&nbsp;&nbsp;&nbsp;获胜次数: {{big_bet_number_3_win_count}}
+                    </div>
+
+                    <div>
+                        {{big_bet_number_3_address}}
+                    </div>
+                </div>
+            </div>
+
+            <div class="bet-address" id="big-address-4">
+                <div class="bet-address-number">
+                    4
+                </div>
+                <div class="bet-address-info">
+                    <div>
+                        总下注次数: {{big_bet_number_4_total_bet}}&nbsp;&nbsp;&nbsp;&nbsp;总下注金额: {{big_bet_number_4_total_bet_amount}}&nbsp;&nbsp;&nbsp;&nbsp;获胜次数: {{big_bet_number_4_win_count}}
+                    </div>
+
+                    <div>
+                        {{big_bet_number_4_address}}
+                    </div>
+                </div>
+            </div>
+
+            <div class="bet-address" id="big-address-5">
+                <div class="bet-address-number">
+                    5
+                </div>
+                <div class="bet-address-info">
+                    <div>
+                        总下注次数: {{big_bet_number_5_total_bet}}&nbsp;&nbsp;&nbsp;&nbsp;总下注金额: {{big_bet_number_5_total_bet_amount}}&nbsp;&nbsp;&nbsp;&nbsp;获胜次数: {{big_bet_number_5_win_count}}
+                    </div>
+
+                    <div>
+                        {{big_bet_number_5_address}}
+                    </div>
+                </div>
+            </div>
+
+            <div class="bet-address" id="big-address-6">
+                <div class="bet-address-number">
+                    6
+                </div>
+                <div class="bet-address-info">
+                    <div>
+                        总下注次数: {{big_bet_number_6_total_bet}}&nbsp;&nbsp;&nbsp;&nbsp;总下注金额: {{big_bet_number_6_total_bet_amount}}&nbsp;&nbsp;&nbsp;&nbsp;获胜次数: {{big_bet_number_6_win_count}}
+                    </div>
+
+                    <div>
+                        {{big_bet_number_6_address}}
+                    </div>
+                </div>
+            </div>
+
+            <div class="bet-address" id="big-address-7">
+                <div class="bet-address-number">
+                    7
+                </div>
+                <div class="bet-address-info">
+                    <div>
+                        总下注次数: {{big_bet_number_7_total_bet}}&nbsp;&nbsp;&nbsp;&nbsp;总下注金额: {{big_bet_number_7_total_bet_amount}}&nbsp;&nbsp;&nbsp;&nbsp;获胜次数: {{big_bet_number_7_win_count}}
+                    </div>
+
+                    <div>
+                        {{big_bet_number_7_address}}
+                    </div>
+                </div>
+            </div>
+
+            <div class="bet-address" id="big-address-8">
+                <div class="bet-address-number">
+                    8
+                </div>
+                <div class="bet-address-info">
+                    <div>
+                        总下注次数: {{big_bet_number_8_total_bet}}&nbsp;&nbsp;&nbsp;&nbsp;总下注金额: {{big_bet_number_8_total_bet_amount}}&nbsp;&nbsp;&nbsp;&nbsp;获胜次数: {{big_bet_number_8_win_count}}
+                    </div>
+
+                    <div>
+                        {{big_bet_number_8_address}}
+                    </div>
+                </div>
+            </div>
+
+            <div class="bet-address" id="big-address-9">
+                <div class="bet-address-number">
+                    9
+                </div>
+                <div class="bet-address-info">
+                    <div>
+                        总下注次数: {{big_bet_number_9_total_bet}}&nbsp;&nbsp;&nbsp;&nbsp;总下注金额: {{big_bet_number_9_total_bet_amount}}&nbsp;&nbsp;&nbsp;&nbsp;获胜次数: {{big_bet_number_9_win_count}}
+                    </div>
+
+                    <div>
+                        {{big_bet_number_9_address}}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- big bet addresses box end -->
+
+
+        <!-- large bet addresses box start -->
+        <div class="hide" id="large-bet-address-box">
+
+            <div class="bet-address" id="large-address-0">
+                <div class="bet-address-number">
+                    0
+                </div>
+                <div class="bet-address-info">
+                    <div>
+                        总下注次数: {{large_bet_number_0_total_bet}}&nbsp;&nbsp;&nbsp;&nbsp;总下注金额: {{large_bet_number_0_total_bet_amount}}&nbsp;&nbsp;&nbsp;&nbsp;获胜次数: {{large_bet_number_0_win_count}}
+                    </div>
+
+                    <div>
+                        {{large_bet_number_0_address}}
+                    </div>
+                </div>
+            </div>
+
+            <div class="bet-address" id="large-address-1">
+                <div class="bet-address-number">
+                    1
+                </div>
+                <div class="bet-address-info">
+                    <div>
+                        总下注次数: {{large_bet_number_1_total_bet}}&nbsp;&nbsp;&nbsp;&nbsp;总下注金额: {{large_bet_number_1_total_bet_amount}}&nbsp;&nbsp;&nbsp;&nbsp;获胜次数: {{large_bet_number_1_win_count}}
+                    </div>
+
+                    <div>
+                        {{large_bet_number_1_address}}
+                    </div>
+                </div>
+            </div>
+
+            <div class="bet-address" id="large-address-2">
+                <div class="bet-address-number">
+                    2
+                </div>
+                <div class="bet-address-info">
+                    <div>
+                        总下注次数: {{large_bet_number_2_total_bet}}&nbsp;&nbsp;&nbsp;&nbsp;总下注金额: {{large_bet_number_2_total_bet_amount}}&nbsp;&nbsp;&nbsp;&nbsp;获胜次数: {{large_bet_number_2_win_count}}
+                    </div>
+
+                    <div>
+                        {{large_bet_number_2_address}}
+                    </div>
+                </div>
+            </div>
+
+            <div class="bet-address" id="large-address-3">
+                <div class="bet-address-number">
+                    3
+                </div>
+                <div class="bet-address-info">
+                    <div>
+                        总下注次数: {{large_bet_number_3_total_bet}}&nbsp;&nbsp;&nbsp;&nbsp;总下注金额: {{large_bet_number_3_total_bet_amount}}&nbsp;&nbsp;&nbsp;&nbsp;获胜次数: {{large_bet_number_3_win_count}}
+                    </div>
+
+                    <div>
+                        {{large_bet_number_3_address}}
+                    </div>
+                </div>
+            </div>
+
+            <div class="bet-address" id="large-address-4">
+                <div class="bet-address-number">
+                    4
+                </div>
+                <div class="bet-address-info">
+                    <div>
+                        总下注次数: {{large_bet_number_4_total_bet}}&nbsp;&nbsp;&nbsp;&nbsp;总下注金额: {{large_bet_number_4_total_bet_amount}}&nbsp;&nbsp;&nbsp;&nbsp;获胜次数: {{large_bet_number_4_win_count}}
+                    </div>
+
+                    <div>
+                        {{large_bet_number_4_address}}
+                    </div>
+                </div>
+            </div>
+
+            <div class="bet-address" id="large-address-5">
+                <div class="bet-address-number">
+                    5
+                </div>
+                <div class="bet-address-info">
+                    <div>
+                        总下注次数: {{large_bet_number_5_total_bet}}&nbsp;&nbsp;&nbsp;&nbsp;总下注金额: {{large_bet_number_5_total_bet_amount}}&nbsp;&nbsp;&nbsp;&nbsp;获胜次数: {{large_bet_number_5_win_count}}
+                    </div>
+
+                    <div>
+                        {{large_bet_number_5_address}}
+                    </div>
+                </div>
+            </div>
+
+            <div class="bet-address" id="large-address-6">
+                <div class="bet-address-number">
+                    6
+                </div>
+                <div class="bet-address-info">
+                    <div>
+                        总下注次数: {{large_bet_number_6_total_bet}}&nbsp;&nbsp;&nbsp;&nbsp;总下注金额: {{large_bet_number_6_total_bet_amount}}&nbsp;&nbsp;&nbsp;&nbsp;获胜次数: {{large_bet_number_6_win_count}}
+                    </div>
+
+                    <div>
+                        {{large_bet_number_6_address}}
+                    </div>
+                </div>
+            </div>
+
+            <div class="bet-address" id="large-address-7">
+                <div class="bet-address-number">
+                    7
+                </div>
+                <div class="bet-address-info">
+                    <div>
+                        总下注次数: {{large_bet_number_7_total_bet}}&nbsp;&nbsp;&nbsp;&nbsp;总下注金额: {{large_bet_number_7_total_bet_amount}}&nbsp;&nbsp;&nbsp;&nbsp;获胜次数: {{large_bet_number_7_win_count}}
+                    </div>
+
+                    <div>
+                        {{large_bet_number_7_address}}
+                    </div>
+                </div>
+            </div>
+
+            <div class="bet-address" id="large-address-8">
+                <div class="bet-address-number">
+                    8
+                </div>
+                <div class="bet-address-info">
+                    <div>
+                        总下注次数: {{large_bet_number_8_total_bet}}&nbsp;&nbsp;&nbsp;&nbsp;总下注金额: {{large_bet_number_8_total_bet_amount}}&nbsp;&nbsp;&nbsp;&nbsp;获胜次数: {{large_bet_number_8_win_count}}
+                    </div>
+
+                    <div>
+                        {{large_bet_number_8_address}}
+                    </div>
+                </div>
+            </div>
+
+            <div class="bet-address" id="large-address-9">
+                <div class="bet-address-number">
+                    9
+                </div>
+                <div class="bet-address-info">
+                    <div>
+                        总下注次数: {{large_bet_number_9_total_bet}}&nbsp;&nbsp;&nbsp;&nbsp;总下注金额: {{large_bet_number_9_total_bet_amount}}&nbsp;&nbsp;&nbsp;&nbsp;获胜次数: {{large_bet_number_9_win_count}}
+                    </div>
+
+                    <div>
+                        {{large_bet_number_9_address}}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- large bet addresses box end -->
+
+
+    </div>
+
+    <div class="content-side">
+        <div class="bet-amount-menu">
+            <div>
+                <div class="bet-amount-menu-item">
+                    小赌注
+                </div>
+                <div class="bet-amount-menu-item">
+                    中赌注
+                </div>
+                <div class="bet-amount-menu-item">
+                    大赌注
+                </div>
+            </div>
+            <br>
+            <div id="small-min-bet-amount-content">
+                最低下注金额 1000 GeekCash
+            </div>
+            <div id="big-min-bet-amount-content" class="hide">
+                最低下注金额 10000 GeekCash
+            </div>
+            <div id="large-min-bet-amount-content" class="hide">
+                最低下注金额 100000 GeekCash
+            </div>
+        </div>
+
+        <div class="curr-bet-info">
+            <div id="small-bet-info">
+                <div>
+                    <span>第{{small_curr_game_round}}轮游戏(小赌注)</span><br>
+                    <span>本轮下注数量: {{small_curr_bet_count}}</span><br>
+                    <span>本轮下注总额: {{small_curr_bet_amount}}</span><br>
+                </div>
+
+                <div>
+                    <span>上轮游戏结果:</span>
+                    <br>
+                    <span>下注数量: {{small_prev_bet_count}}</span>
+                    <span>下注总额: {{small_prev_bet_amount}}</span>
+                    <br>
+                    <span>赢家数量: {{small_prev_winner_count}}</span>
+                    <span>输家数量: {{small_prev_loser_count}}</span>
+                    <br>
+                    <span>奖金总额: {{small_prev_total_reward}}</span>
+                    <br>
+                    <span>开奖数字: {{small_prev_reward_number}}</span>
+                </div>
+            </div>
+
+            <div id="big-bet-info" class="hide">
+                <div>
+                    <span>第{{big_curr_game_round}}轮游戏(中赌注)</span><br>
+                    <span>本轮下注数量: {{big_curr_bet_count}}</span><br>
+                    <span>本轮下注总额: {{big_curr_bet_amount}}</span><br>
+                </div>
+
+                <div>
+                    <span>上轮游戏结果:</span>
+                    <br>
+                    <span>下注数量: {{big_prev_bet_count}}</span>
+                    <span>下注总额: {{big_prev_bet_amount}}</span>
+                    <br>
+                    <span>赢家数量: {{big_prev_winner_count}}</span>
+                    <span>输家数量: {{big_prev_loser_count}}</span>
+                    <br>
+                    <span>奖金总额: {{big_prev_total_reward}}</span>
+                    <br>
+                    <span>开奖数字: {{big_prev_reward_number}}</span>
+                </div>
+            </div>
+
+            <div id="large-bet-info" class="hide">
+                <div>
+                    <span>第{{large_curr_game_round}}轮游戏(大赌注)</span><br>
+                    <span>本轮下注数量: {{large_curr_bet_count}}</span><br>
+                    <span>本轮下注总额: {{large_curr_bet_amount}}</span><br>
+                </div>
+
+                <div>
+                    <span>上轮游戏结果:</span>
+                    <br>
+                    <span>下注数量: {{large_prev_bet_count}}</span>
+                    <span>下注总额: {{large_prev_bet_amount}}</span>
+                    <br>
+                    <span>赢家数量: {{large_prev_winner_count}}</span>
+                    <span>输家数量: {{large_prev_loser_count}}</span>
+                    <br>
+                    <span>奖金总额: {{large_prev_total_reward}}</span>
+                    <br>
+                    <span>开奖数字: {{large_prev_reward_number}}</span>
+                </div>
+            </div>
+
+            <div>
+                <span><a href="https://aiodex.com/exchange/GEEK_BTC">购买GeekCash</a></span>
+                <span>历史游戏</span>
+            </div>
+
+        </div>
+
+        <div class="lucky-player">
+            <div>
+                <span>txid</span>
+                <span>下注</span>
+                <span>收益</span>
+                <span>时间</span>
+            </div>
+
+            <div>
+                <span>2cd1b3f32</span>
+                <span>2000</span>
+                <span>4562</span>
+                <span>2018-09-26 11:58:59</span>
+            </div>
+
+            <div>
+                <span>275851db6</span>
+                <span>2654</span>
+                <span>-4562</span>
+                <span>2018-09-26 12:12:59</span>
+            </div>
+
+        </div>
+
+
+        <div class="bet-rules">
+            <div>怎么样玩?</div>
+            <div>1. 选择一个数字下注 <span style="color:red;">(请不要从任何交易所地址下注)</span>。</div>
+            <div>2. 下注金额必须不小于最低下注金额，否则会自动输掉下注。</div>
+            <div>3. 每一轮游戏，所有赢家下注金额全部返还，然后按下注比例瓜分所有输家下注金额。</div>
+            <div>4. 在所有下注中，若产生赢家和输家，则本轮游戏结束，下轮游戏自动开始。</div>
+            <div>5. (查看详细游戏规则)</div>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

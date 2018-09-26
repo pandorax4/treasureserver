@@ -9,6 +9,9 @@
 import db
 
 view_root = "../"
+template_index_file = "./template/index.html"
+template_bet_file = "./template/bet.html"
+template_history_file = "./template/history.html"
 
 
 # 生成每一轮小赌注详情页（包含每一个下注）
@@ -50,19 +53,17 @@ def generate_current_bet_round_detail_page():
     pass
 
 
-# 生成小赌注主页（附带当前轮未结算信息）
-def generate_small_bet_index_page():
-    pass
+def generate_index_page():
+    f = open(template_index_file, "r", encoding="utf-8")
+    html = f.read()
+    f.close()
+    print(html)
+
+    curr_small_game_round = db.get_curr_unsettled_game_round(1)
+    curr_big_game_round = db.get_curr_unsettled_game_round(2)
+    curr_large_game_round = db.get_curr_unsettled_game_round(3)
 
 
-# 生成中赌注主页（附带当前轮未结算信息）
-def generate_big_bet_index_page():
-    pass
-
-
-# 生成大赌注主页（附带当前轮未结算信息）
-def generate_large_bet_index_page():
-    pass
 
 
 def push_page():
@@ -77,10 +78,9 @@ def update_view(_small_settled_round_list, _big_settled_round_list, _large_settl
     generate_big_settled_header_page()
     generate_large_settled_header_page()
     generate_current_bet_round_detail_page()
-    generate_small_bet_index_page()
-    generate_big_bet_index_page()
-    generate_large_bet_index_page()
+    generate_index_page()
     push_page()
 
 
 
+generate_index_page()
