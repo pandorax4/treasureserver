@@ -184,3 +184,36 @@ large_prev_winner_count = 0
 large_prev_loser_count = 0
 large_prev_total_reward = 0
 large_prev_reward_number = 0
+
+
+small_current_bets_content
+big_current_bets_content
+large_current_bets_content
+join_txid
+bet_number
+bet_amount
+join_time
+
+
+
+# ----------------- Bet Detail Page ---------------------------
+
+game_round
+reward_number
+start_block
+end_block
+reward_block
+total_bet_count
+total_bet_amount
+winner_count
+loser_count
+total_reward
+
+bets_content
+
+join_txid
+join_time
+bet_number
+bet_amount
+profit_amount
+payment_txid

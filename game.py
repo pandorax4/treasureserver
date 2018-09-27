@@ -8,14 +8,11 @@ import model
 
 dev_reward_account = "dev_reward"
 
-#bet_address_dict = {}  # account - address
-#bet_address_number_dict = {}  # address - bet number
+# bet_address_dict = {}  # account - address
+# bet_address_number_dict = {}  # address - bet number
 dev_reward_address = ""
 prev_block_height = -1
 dev_reward_percentage = 0.05
-
-
-
 
 bet_level_min_amount_dict = {
     1: 1000,
@@ -240,7 +237,7 @@ def step2_try_settle_bets(_curr_block_height, _bet_level):
             db.save_settlement_bet_list(settled_bet_list)
             db.save_settled_header_data(
                 curr_game_round,
-	            nonce_last_number,
+                nonce_last_number,
                 _bet_level,
                 len(settled_bet_list),
                 len(winer_list),
@@ -249,7 +246,8 @@ def step2_try_settle_bets(_curr_block_height, _bet_level):
                 total_loser_amount,
                 dev_reward,
                 min_join_block,
-                max_join_block,
+                check_block,
+                block_nonce,
             )
     return settled_game_round_list
 
@@ -280,11 +278,8 @@ def game_loop():
         time.sleep(1)
 
 
-#init_addresses()
+# init_addresses()
 db.init_db()
-#game_loop()
+# game_loop()
 
 print(db.get_last_game_round_number(1))
-
-
-
