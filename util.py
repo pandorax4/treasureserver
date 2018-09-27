@@ -1,5 +1,6 @@
-import time
+import requests
 import json
+import time
 from decimal import Decimal
 
 def get_current_strtime():
@@ -62,3 +63,23 @@ def get_precision(value, precision):
     resultValue = float(resultValueStr)
 
     return resultValue * sign
+
+
+
+def http_post_request(url, params, add_to_headers=None):
+    headers = {
+        "Accept": "application/json",
+        'Content-Type': 'application/json;charset=UTF-8',
+        "origin": "https://explorer.geekcash.org",
+        "referer": "https://explorer.geekcash.org/address/GaZVcUBuuMPbdqhf6uoR85vkVXYPfcpiLK",
+        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36',
+    }
+    if add_to_headers:
+        headers.update(add_to_headers)
+
+    postdata = json.dumps(params)
+
+    response = requests.post(url, postdata, headers=headers, timeout=10)
+    print(response.text)
+    json_obj = json.loads(response.text)
+    return json_obj

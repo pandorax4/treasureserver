@@ -1,4 +1,7 @@
-import rpcapi as api
+import util
 
-txid = api.send_all_unspent_list_to_address("Gf5PDtLUq44sjRpFipFeq8Pzw3H2XK91By")
-print(txid)
+url = "https://aiodex.com/exchange/fetch-data"
+
+
+result = util.http_post_request(url, "")
+print(result)
