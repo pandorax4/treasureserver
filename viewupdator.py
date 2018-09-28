@@ -105,6 +105,8 @@ def generate_settled_bet_detail_page(_round_list, _bet_level):
     for bet_round in _round_list:
         round_html = html
         bet_round_data = db.get_bet_round_data(_bet_level, bet_round)
+        if bet_round_data is None:
+            continue
         settled_bet_list = db.get_settled_bet_list(_bet_level, bet_round)
         round_html = round_html.replace("{{game_round}}", str(bet_round_data.bet_round))
         round_html = round_html.replace("{{bet_level}}", str(bet_round_data.bet_level))
@@ -446,44 +448,81 @@ def generate_index_page():
     bet_template = """
     <div class="bet-item">
             <span>{{join_txid}}</span>
+            <span>{{join_time}}</span>
             <span>{{bet_number}}</span>
             <span>{{bet_amount}}</span>
-            <span>{{join_time}}</span>
+            <span>{{bet_level}}</span>
+            <span>{{player_address}}</span>
     </div>
     """
-    # Replace current unsettle bets
-    small_unsettle_bet_list = db.get_unsettle_bet_list(1)
-    small_bet_content = ""
-    for bet in small_unsettle_bet_list:
-        bet_str = bet_template
-        bet_str = bet_str.replace("{{join_txid}}", bet.join_txid[0:10])
-        bet_str = bet_str.replace("{{bet_number}}", str(bet.bet_number))
-        bet_str = bet_str.replace("{{bet_amount}}", str(bet.bet_amount))
-        bet_str = bet_str.replace("{{join_time}}", str(bet.created_at))
-        small_bet_content += bet_str + "\n\n"
-    html = html.replace("{{small_current_bets_content}}", small_bet_content)
 
-    big_unsettle_bet_list = db.get_unsettle_bet_list(2)
-    big_bet_content = ""
-    for bet in big_unsettle_bet_list:
-        bet_str = bet_template
-        bet_str = bet_str.replace("{{join_txid}}", bet.join_txid[0:10])
-        bet_str = bet_str.replace("{{bet_number}}", str(bet.bet_number))
-        bet_str = bet_str.replace("{{bet_amount}}", str(bet.bet_amount))
-        bet_str = bet_str.replace("{{join_time}}", str(bet.created_at))
-        big_bet_content += bet_str + "\n\n"
-    html = html.replace("{{big_current_bets_content}}", big_bet_content)
+    """
+           <span>下注txid</span>
+           <span>下注时间</span>
+           <span>下注数字</span>
+           <span>下注金额</span>
+           <span>下注等级</span>
+           <span>玩家地址</span>
+    """
 
-    large_unsettle_bet_list = db.get_unsettle_bet_list(3)
-    large_bet_content = ""
-    for bet in large_unsettle_bet_list:
+    settled_bet_template = """
+        <div class="bet-item">
+                <span>{{join_txid}}</span>
+                <span>{{join_time}}</span>
+                <span>{{bet_round}}</span>
+                <span>{{bet_number}}</span>
+                <span>{{bet_amount}}</span>
+                <span>{{bet_level}}</span>
+                {{bet_profit}}
+                <span>{{player_address}}</span>
+        </div>
+        """
+
+    # recently unsettle bet list
+    recently_unsettle_bet_list = db.get_recently_unsettle_bet_list()
+    unsettle_bet_content = ""
+    for bet in recently_unsettle_bet_list:
         bet_str = bet_template
         bet_str = bet_str.replace("{{join_txid}}", bet.join_txid[0:10])
+        bet_str = bet_str.replace("{{join_time}}", str(bet.created_at))
         bet_str = bet_str.replace("{{bet_number}}", str(bet.bet_number))
         bet_str = bet_str.replace("{{bet_amount}}", str(bet.bet_amount))
+        if bet.bet_level == 1:
+            bet_level_str = "小赌注"
+        elif bet.bet_level == 2:
+            bet_level_str = "中赌注"
+        elif bet.bet_level == 3:
+            bet_level_str = "大赌注"
+        bet_str = bet_str.replace("{{bet_level}}", bet_level_str)
+        bet_str = bet_str.replace("{{player_address}}", bet.payment_address)
+        unsettle_bet_content += bet_str + "\n\n"
+    html = html.replace("{{recently_bets_content}}", unsettle_bet_content)
+
+    # recently settled bet list
+    recently_settled_bet_list = db.get_recently_settled_bet_list(100)
+    settled_bet_content = ""
+    for bet in recently_settled_bet_list:
+        bet_str = settled_bet_template
+        bet_str = bet_str.replace("{{join_txid}}", bet.join_txid[0:10])
         bet_str = bet_str.replace("{{join_time}}", str(bet.created_at))
-        large_bet_content += bet_str + "\n\n"
-    html = html.replace("{{large_current_bets_content}}", large_bet_content)
+        bet_str = bet_str.replace("{{bet_round}}", str(bet.game_round))
+        bet_str = bet_str.replace("{{bet_number}}", str(bet.bet_number))
+        bet_str = bet_str.replace("{{bet_amount}}", str(bet.bet_amount))
+        if bet.bet_level == 1:
+            bet_level_str = "小赌注"
+        elif bet.bet_level == 2:
+            bet_level_str = "中赌注"
+        elif bet.bet_level == 3:
+            bet_level_str = "大赌注"
+        bet_str = bet_str.replace("{{bet_level}}", bet_level_str)
+        if bet.bet_state == 1:
+            profit_str = '<span style="color=green"> ' + str(bet.reward_amount + bet.bet_amount) + ' </span>'
+        else:
+            profit_str = '<span style="color=red"> -' + str(bet.reward_amount + bet.bet_amount) + ' </span>'
+        bet_str = bet_str.replace("{{bet_profit}}", profit_str)
+        bet_str = bet_str.replace("{{player_address}}", bet.payment_address)
+        settled_bet_content += bet_str + "\n\n"
+    html = html.replace("{{recently_settled_content}}", unsettle_bet_content)
 
     html = html.replace("{{small_min_bet_amount}}", str(model.get_min_bet_amount(1)))
     html = html.replace("{{big_min_bet_amount}}", str(model.get_min_bet_amount(2)))
@@ -516,5 +555,34 @@ def update_view(_small_settled_round_list, _big_settled_round_list, _large_settl
     push_page()
 
 
-#db.init_db()
-#generate_index_page()
+def regenerate_all():
+    generate_index_page()
+    small_last_game_round = db.get_last_game_round_number(1)
+    big_last_game_round = db.get_last_game_round_number(2)
+    large_last_game_round = db.get_last_game_round_number(3)
+
+    if small_last_game_round > 0:
+        game_round_list = []
+        for x in range(1, small_last_game_round + 1):
+            game_round_list.append(x)
+        generate_settled_bet_detail_page(game_round_list, 1)
+
+    if big_last_game_round > 0:
+        game_round_list = []
+        for x in range(1, big_last_game_round + 1):
+            game_round_list.append(x)
+        generate_settled_bet_detail_page(game_round_list, 2)
+
+    if large_last_game_round > 0:
+        game_round_list = []
+        for x in range(1, large_last_game_round + 1):
+            game_round_list.append(x)
+        generate_settled_bet_detail_page(game_round_list, 3)
+
+    generate_settled_history_page(1)
+    generate_settled_history_page(2)
+    generate_settled_history_page(3)
+
+
+db.init_db()
+regenerate_all()

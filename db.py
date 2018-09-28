@@ -81,7 +81,6 @@ def get_unsettle_bet_list(_bet_level):
 
 def get_bet_list_by_round(_game_round):
     bet_list = DBBet.select().where(DBBet.game_round == _game_round)
-    print(len(bet_list))
     return bet_list
 
 
@@ -122,13 +121,15 @@ def save_settlement_bet_list(_dbbet_list):
 
 def get_last_game_round_number(_bet_level):
     result = DBBet.select(fn.Max(DBBet.game_round)).where(DBBet.bet_level == _bet_level).scalar()
+    if result is None:
+        return 0
     return result
 
 
 def get_curr_unsettle_game_round(_bet_level):
     result = DBBet.select(fn.Max(DBBet.game_round)).where(DBBet.bet_level == _bet_level).scalar()
     if result is None:
-        result = 0
+        result = 1
     return result + 1
 
 
@@ -210,6 +211,16 @@ def get_settled_bet_list(_bet_level, _bet_round):
         (DBBet.bet_level == _bet_level) & (DBBet.game_round == _bet_round)
     )
     return settled_bet_list
+
+
+def get_recently_unsettle_bet_list():
+    result = DBBet.select().where(DBBet.bet_state == -1).order_by(DBBet.created_at.desc())
+    return result
+
+
+def get_recently_settled_bet_list(_limit):
+    result = DBBet.select().where(DBBet.bet_state != -1).order_by(DBBet.created_at.desc()).limit(_limit)
+    return result
 
 
 def init_db():

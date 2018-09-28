@@ -8,14 +8,14 @@
     <script src="../assets/js/util.js"></script>
 </head>
 
-<body>
+<body id="games">
 
 <header>
     <div class="header-title">
         GeekCash Games
     </div>
 
-    <div class="header-menu" id="games">
+    <div class="header-menu">
         <span><a href="#">主页</a></span>
         <span><a href="rules.html">规则及公平性</a></span>
         <span><a href="https://aiodex.com/exchange/GEEK_BTC">购买GeekCash</a></span>
@@ -28,7 +28,8 @@
 
     <div class="content-side">
         <div class="game-story">
-            幸运轮盘，快速赢取大额 GeekCash
+            幸运轮盘，快速赢取大额 GeekCash<br>
+            (只要有人赢，有人输，则本轮游戏结束，所有输的人的下注作为奖金分给赢的人)
         </div>
 
         <!-- Small bet addresses box start -->
@@ -516,13 +517,13 @@
                 </div>
             </div>
             <br>
-            <div id="small-min-bet-amount-content">
+            <div id="small-min-bet-amount-content" v-bind:class="{ hide: selected_small_bet }">
                 最低下注金额 {{small_min_bet_amount}} GeekCash
             </div>
-            <div id="big-min-bet-amount-content" class="hide">
+            <div id="big-min-bet-amount-content" v-bind:class="{ hide: selected_big_bet }">
                 最低下注金额 {{big_min_bet_amount}} GeekCash
             </div>
-            <div id="large-min-bet-amount-content" class="hide">
+            <div id="large-min-bet-amount-content" v-bind:class="{ hide: selected_large_bet }">
                 最低下注金额 {{large_min_bet_amount}} GeekCash
             </div>
         </div>
@@ -637,50 +638,41 @@
 
     </div>
 
-    <div id="small-current-bets" class="curr-unsettle-bets">
+    <div>
+        <div class="curr-unsettle-bets">
+            <div>最新下注: </div>
+            <div class="bet-item">
+                <span>下注txid</span>
+                <span>下注时间</span>
+                <span>下注数字</span>
+                <span>下注金额</span>
+                <span>下注等级</span>
+                <span>玩家地址</span>
+            </div>
 
-        <div>本轮下注: (小赌注)</div>
-        <div class="bet-item">
-            <span>下注txid</span>
-            <span>下注数字</span>
-            <span>下注金额</span>
-            <span>下注时间</span>
+            {{recently_bets_content}}
         </div>
-
-        {{small_current_bets_content}}
 
 
     </div>
 
-    <div id="big-current-bets" class="curr-unsettle-bets hide">
-
-        <div>本轮下注: (中赌注)</div>
-        <div class="bet-item">
+    <div>
+        <div class="curr-unsettle-bets">
+            <div>最近下注结果: </div>
             <span>下注txid</span>
+            <span>下注时间</span>
+            <span>游戏轮数</span>
             <span>下注数字</span>
             <span>下注金额</span>
-            <span>下注时间</span>
+            <span>下注等级</span>
+            <span>下注收益</span>
+            <span>玩家地址</span>
+            {{recently_settled_content}}
+
         </div>
-
-        {{big_current_bets_content}}
-
 
     </div>
 
-    <div id="large-current-bets" class="curr-unsettle-bets hide">
-
-        <div>本轮下注: (中赌注)</div>
-        <div class="bet-item">
-            <span>下注txid</span>
-            <span>下注数字</span>
-            <span>下注金额</span>
-            <span>下注时间</span>
-        </div>
-
-        {{large_current_bets_content}}
-
-
-    </div>
 
 </div>
 
@@ -689,11 +681,14 @@
 
 
 <script>
-
+alert("hello")
 var games = new Vue({
   el: '#games',
   data: {
-    name: 'Vue.js'
+    name: 'Vue.js',
+    selected_small_bet: true,
+    selected_big_bet: true,
+    selected_large_bet: true,
   },
   // 在 `methods` 对象中定义方法
   methods: {

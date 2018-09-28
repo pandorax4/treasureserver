@@ -98,6 +98,7 @@ def step1_try_save_bet_list(_curr_block_height, _bet_level):
                 bet_data["bet_amount"] = util.get_precision(float(unspent["amount"]), 8)
                 bet_data["payment_address"] = input_address_list[0]
                 bet_data["bet_level"] = _bet_level
+
                 bet_list.append(bet_data)
     db.save_new_bet_list(bet_list, _bet_level)
 
@@ -218,8 +219,8 @@ def step2_try_settle_bets(_curr_block_height, _bet_level):
                 print("Loser: ", dbbet.join_txid, "Join Height: ", dbbet.join_block_height, "address: ",
                       dbbet.payment_address, "bet number: ", dbbet.bet_number, "Bet Amount: ", dbbet.bet_amount)
 
-            last_game_round = db.get_last_game_round_number(_bet_level)
-            curr_game_round = last_game_round + 1
+            # last_game_round = db.get_last_game_round_number(_bet_level)
+            curr_game_round = db.get_curr_unsettle_game_round(_bet_level)
             settled_game_round_list.append(curr_game_round)
 
             min_join_block = -1
