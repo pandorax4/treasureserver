@@ -9,16 +9,71 @@
 import db
 import model
 
-view_root = "../"
-template_index_file = "./view/template/index.html"
-template_bet_file = "./view/template/bet.html"
-template_history_file = "./view/template/history.html"
+view_root = "./view/generated/"
+view_ch_root = view_root + "ch/"
+view_ch_small_bet_root = view_ch_root + "smallbet/"
+view_ch_big_bet_root = view_ch_root + "bigbet/"
+view_ch_large_bet_root = view_ch_root + "largebet/"
 
-generated_index_file = "./view/generated/index.html"
-generated_bet_detail_root = "./view/generated/bets/"
-generated_bet_history_root = "./view/generated/bets/"
+view_en_root = view_root + "en/"
+view_en_small_bet_root = view_en_root + "smallbet/"
+view_en_big_bet_root = view_en_root + "bigbet/"
+view_en_large_bet_root = view_en_root + "largebet/"
 
 
+def get_index_file_path(_lang=0):
+    """
+    :param _lang: 0 english, 1 chinese
+    :return:
+    """
+    if _lang == 0:
+        return view_en_root + "index.html"
+    else:
+        return view_ch_root + "index.html"
+
+
+def get_history_file_path(_bet_level, _lang=0):
+    html_name = "history.html"
+    if _lang == 0:
+        if _bet_level == 1:
+            return view_en_small_bet_root + html_name
+        if _bet_level == 2:
+            return view_en_big_bet_root + html_name
+        if _bet_level == 3:
+            return view_en_large_bet_root + html_name
+    if _lang == 1:
+        if _bet_level == 1:
+            return view_ch_small_bet_root + html_name
+        if _bet_level == 2:
+            return view_ch_big_bet_root + html_name
+        if _bet_level == 3:
+            return view_ch_large_bet_root + html_name
+
+
+def get_bet_detail_file_path(_bet_level, _bet_round, _lang=0):
+    html_name = "{}.html".format(_bet_round)
+    if _lang == 0:
+        if _bet_level == 1:
+            return view_en_small_bet_root + html_name
+        if _bet_level == 2:
+            return view_en_big_bet_root + html_name
+        if _bet_level == 3:
+            return view_en_large_bet_root + html_name
+    if _lang == 1:
+        if _bet_level == 1:
+            return view_ch_small_bet_root + html_name
+        if _bet_level == 2:
+            return view_ch_big_bet_root + html_name
+        if _bet_level == 3:
+            return view_ch_large_bet_root + html_name
+
+
+template_index_file = "./view/template/ch/index.html"
+template_bet_file = "./view/template/ch/bet.html"
+template_history_file = "./view/template/ch/history.html"
+
+
+"""
 def get_generated_bet_file_path(_bet_level, _bet_round):
     if _bet_level == 1:
         return "{}{}/{}.html".format(generated_bet_detail_root, "small", _bet_round)
@@ -38,6 +93,7 @@ def get_generated_bet_history_file_path(_bet_level):
     elif _bet_level == 3:
         return "{}{}/{}.html".format(generated_bet_history_root, "large", page_name)
     return None
+"""
 
 
 # 生成每一轮赌注详情页（包含每一个下注）
@@ -80,18 +136,18 @@ def generate_settled_bet_detail_page(_round_list, _bet_level):
             bet_str = bet_str.replace("{{bet_number}}", str(bet.bet_number))
             bet_str = bet_str.replace("{{bet_amount}}", str(bet.bet_amount))
             if bet.bet_state == 0:
-                new_str = '<span class="bet-lose">-' + str(bet.bet_amount) + '</span>'
+                new_str = '<span class="bet-lose">-' + str(bet.reward_amount) + '</span>'
                 bet_str = bet_str.replace("{{profit_amount}}", new_str)
-                bet_str = bet_str.replace("{{payment_txid}}", "-")
+                bet_str = bet_str.replace("{{reward_txid}}", "-")
             else:
-                new_str = '<span>' + str(bet.bet_amount) + '</span>'
+                new_str = '<span>' + str(bet.reward_amount) + '</span>'
                 bet_str = bet_str.replace("{{profit_amount}}", new_str)
                 bet_str = bet_str.replace("{{reward_txid}}", bet.reward_txid)
             bet_content += bet_str + "\n\n"
 
         round_html = round_html.replace("{{bets_content}}", bet_content)
 
-        bet_html_file = get_generated_bet_file_path(_bet_level, bet_round)
+        bet_html_file = get_bet_detail_file_path(_bet_level, bet_round, 1)
         f = open(bet_html_file, "w", encoding="utf-8")
         f.write(round_html)
         f.close()
@@ -140,7 +196,7 @@ def generate_settled_history_page(_bet_level):
 
     html = html.replace("{{history_bet_content}}", history_content)
 
-    html_file = get_generated_bet_history_file_path(_bet_level)
+    html_file = get_history_file_path(_bet_level, 1)
     f = open(html_file, "w", encoding="utf-8")
     f.write(html)
     f.close()
@@ -150,7 +206,6 @@ def generate_index_page():
     f = open(template_index_file, "r", encoding="utf-8")
     html = f.read()
     f.close()
-    print(html)
 
     param_dict = {
         "small_bet_number_0_total_bet": db.get_total_bet_count(1, 0),
@@ -430,10 +485,15 @@ def generate_index_page():
         large_bet_content += bet_str + "\n\n"
     html = html.replace("{{large_current_bets_content}}", large_bet_content)
 
+    html = html.replace("{{small_min_bet_amount}}", str(model.get_min_bet_amount(1)))
+    html = html.replace("{{big_min_bet_amount}}", str(model.get_min_bet_amount(2)))
+    html = html.replace("{{large_min_bet_amount}}", str(model.get_min_bet_amount(3)))
+
     for key in param_dict:
         # print(key, param_dict[key])
         html = html.replace("{{" + key + "}}", str(param_dict[key]))
-    f = open(generated_index_file, "w", encoding="utf-8")
+    html_file = get_index_file_path(1)
+    f = open(html_file, "w", encoding="utf-8")
     f.write(html)
     f.close()
 
@@ -456,5 +516,5 @@ def update_view(_small_settled_round_list, _big_settled_round_list, _large_settl
     push_page()
 
 
-db.init_db()
-generate_index_page()
+#db.init_db()
+#generate_index_page()

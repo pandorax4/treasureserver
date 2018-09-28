@@ -75,12 +75,13 @@ def _generate_test_bet_data():
 
 
 def get_unsettle_bet_list(_bet_level):
-    unsettle_bet_list = DBBet.select().where(DBBet.bet_state == -1 and DBBet.bet_level == _bet_level)
+    unsettle_bet_list = DBBet.select().where((DBBet.bet_state == -1) & (DBBet.bet_level == _bet_level))
     return unsettle_bet_list
 
 
 def get_bet_list_by_round(_game_round):
     bet_list = DBBet.select().where(DBBet.game_round == _game_round)
+    print(len(bet_list))
     return bet_list
 
 
@@ -133,13 +134,13 @@ def get_curr_unsettle_game_round(_bet_level):
 
 def get_total_bet_count(_bet_level, _bet_number):
     count = DBBet.select(fn.Count(DBBet.join_txid)).where(
-        DBBet.bet_level == _bet_level and DBBet.bet_number == _bet_number).scalar()
+        (DBBet.bet_level == _bet_level) & (DBBet.bet_number == _bet_number)).scalar()
     return count
 
 
 def get_total_bet_amount(_bet_level, _bet_number):
     sum_amount = DBBet.select(fn.SUM(DBBet.bet_amount)).where(
-        DBBet.bet_level == _bet_level and DBBet.bet_number == _bet_number).scalar()
+        (DBBet.bet_level == _bet_level) * (DBBet.bet_number == _bet_number)).scalar()
     if sum_amount is None:
         return 0
     else:
@@ -148,20 +149,20 @@ def get_total_bet_amount(_bet_level, _bet_number):
 
 def get_bet_number_total_win_count(_bet_level, _bet_number):
     count = DBBetRound.select(fn.Count(DBBetRound.bet_round)).where(
-        DBBetRound.bet_level == _bet_level and DBBetRound.bet_number == _bet_number).scalar()
+        (DBBetRound.bet_level == _bet_level) & (DBBetRound.bet_number == _bet_number)).scalar()
     return count
 
 
 def get_curr_unsettle_count(_bet_level):
     count = DBBet.select(fn.Count(DBBet.join_txid)).where(
-        DBBet.bet_level == _bet_level and DBBet.bet_state == -1
+        (DBBet.bet_level == _bet_level) & (DBBet.bet_state == -1)
     ).scalar()
     return count
 
 
 def get_curr_unsettle_amount(_bet_level):
     amount = DBBet.select(fn.SUM(DBBet.bet_amount)).where(
-        DBBet.bet_level == _bet_level and DBBet.bet_state == -1
+        (DBBet.bet_level == _bet_level) & (DBBet.bet_state == -1)
     ).scalar()
     if amount is None:
         return 0
@@ -170,7 +171,7 @@ def get_curr_unsettle_amount(_bet_level):
 
 def get_bet_round_data(_bet_level, _bet_round):
     bet_rounds = DBBetRound.select().where(
-        DBBetRound.bet_round == _bet_round and DBBetRound.bet_level == _bet_level)
+        (DBBetRound.bet_round == _bet_round) & (DBBetRound.bet_level == _bet_level))
     if len(bet_rounds) > 0:
         return bet_rounds[0]
     return None
@@ -179,7 +180,7 @@ def get_bet_round_data(_bet_level, _bet_round):
 def save_settled_header_data(_bet_round, _bet_number, _bet_level, _bet_count, _winner_count,
                              _loser_count, _total_bet_amount, _total_reward,
                              _dev_reward, _start_block, _settled_block, _block_nonce):
-    DBBetRound.Create(
+    DBBetRound.create(
         bet_round=_bet_round,
         bet_number=_bet_number,
         bet_level=_bet_level,
@@ -206,7 +207,7 @@ def get_settled_header_list(_bet_level):
 
 def get_settled_bet_list(_bet_level, _bet_round):
     settled_bet_list = DBBet.select().where(
-        DBBet.bet_level == _bet_level and DBBet.game_round == _bet_round
+        (DBBet.bet_level == _bet_level) & (DBBet.game_round == _bet_round)
     )
     return settled_bet_list
 
@@ -224,4 +225,3 @@ def init_db():
 
 def close_db():
     db.close()
-
