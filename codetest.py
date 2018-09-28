@@ -1,7 +1,12 @@
-import util
+import json
 
-url = "https://aiodex.com/exchange/fetch-data"
+data = {
+	"name":"fredshao",
+	"age":27,
+	"score":99,
+}
 
+json_str = json.dumps(data)
 
-result = util.http_post_request(url, "")
-print(result)
+with open("data.json", "w", encoding="utf-8") as f:
+	f.write(json_str)

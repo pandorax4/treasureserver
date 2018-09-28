@@ -8,8 +8,9 @@
     <script src="../assets/js/util.js"></script>
 </head>
 
-<body id="games">
+<body>
 
+<div id="games">
 <header>
     <div class="header-title">
         GeekCash Games
@@ -507,13 +508,13 @@
         <div class="bet-amount-menu">
             <div>
                 <div class="bet-amount-menu-item">
-                    小赌注
+                    <a v-on:click="showSmallBet">小赌注</a>
                 </div>
                 <div class="bet-amount-menu-item">
-                    中赌注
+                    <a v-on:click="showBigBet">中赌注</a>
                 </div>
                 <div class="bet-amount-menu-item">
-                    大赌注
+                    <a v-on:click="showLargeBet">大赌注</a>
                 </div>
             </div>
             <br>
@@ -676,29 +677,38 @@
 
 </div>
 
+</div>
+
 </body>
 
 
 
 <script>
-alert("hello")
 var games = new Vue({
   el: '#games',
   data: {
     name: 'Vue.js',
     selected_small_bet: true,
-    selected_big_bet: true,
+    selected_big_bet: false,
     selected_large_bet: true,
   },
   // 在 `methods` 对象中定义方法
   methods: {
-    greet: function (event) {
-      // `this` 在方法里指向当前 Vue 实例
-      alert('Hello ' + this.name + '!')
-      // `event` 是原生 DOM 事件
-      if (event) {
-        alert(event.target.tagName)
-      }
+    showSmallBet: function(event){
+        this.selected_small_bet = false;
+        this.selected_big_bet = true;
+        this.selected_large_bet = true;
+    },
+    showBigBet: function(event){
+        alert("hello");
+        this.selected_small_bet = true;
+        this.selected_big_bet = false;
+        this.selected_large_bet = true;
+    },
+    showLargeBet: function(event){
+        selected_small_bet = true;
+        selected_big_bet = true;
+        selected_large_bet = false;
     },
     setChinese: function(event){
     	var currUrl = window.location.toString();

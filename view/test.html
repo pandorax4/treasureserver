@@ -1,0 +1,54 @@
+<html>
+	<head>
+	    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js"></script>
+	    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+	</head>
+
+	<body>
+		<div id="app">
+  			{{ message }}
+		</div>
+	</body>
+
+
+	<script>
+
+		var app = new Vue({
+  			el: '#app',
+  			data: {
+    			message: 'Hello Vue!'
+  			},
+  			methods:{
+  				method1: function(){
+  					alert("Tell me your name");
+  				},
+  				refreshData: function(data){
+  					this.message = data["name"]
+  				}
+  			}
+		})
+
+
+		setTimeout(function(){ alert("first")});
+		setInterval(function(){refresh();}, 3000);
+
+
+		function refresh(){
+			$.ajax({
+				dataType: "json",
+				type: "GET",
+				url: "./data.json",
+				cache: false,
+				success: function(data){
+					app.refreshData(data);
+				},
+				error: function(){
+					alert("error")
+				}
+			});
+		}
+
+	</script>
+
+
+</html>
