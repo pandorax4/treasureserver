@@ -1,0 +1,501 @@
+
+
+.content-side{
+    width: 507px;
+    /*height:800px;*/
+    /*background:#181B2A;*/
+    /*#1B1E2E 标题 */
+    margin-bottom:10px;
+
+}
+
+.side-bg{
+    /*background:#181B2A;*/
+    width:100%;
+    height:100%;
+}
+
+.side-bg div:nth-child(1){
+
+}
+
+.game-story{
+    height:110px;
+    /*text-align: center;*/
+    vertical-align: center;
+    padding-left:10px;
+    background:#181B2A;
+    font-size:14px;
+    border-top:1px solid #181B2A;
+}
+
+.game-story div:nth-child(1){
+    font-size:22px;
+    margin-top:10px;
+}
+
+.game-story-des{
+    /*text-align: center;
+    border:1px solid red;
+    */
+}
+
+
+.bet-address-box{
+    height:700px;
+    margin-top:10px;
+    background:#181B2A;
+    padding-left:10px;
+}
+
+
+
+.bet-address{
+    float:left;
+    margin-top:15px;
+    width:100%;
+    height:40px;
+    padding:5px;
+}
+
+.bet-address-number{
+    float:left;
+    font-size:30px;
+}
+
+.bet-address-info{
+    float:left;
+    font-size:14px;
+    margin-left:10px;
+}
+
+.bet-address-info div:nth-child(2){
+    /*font-weight: bold;*/
+
+}
+
+
+
+
+
+
+.bet-amount-menu-box{
+    height:110px;
+    background:#181B2A;
+    border-top:1px solid #181B2A;
+}
+
+
+.bet-amount-menu-content{
+    margin-left:10px;
+    margin-top:15px;
+}
+
+
+.bet-level-select-box{
+    text-align: center;
+}
+
+.bet-level-select-box span{
+    display:inline-block;
+    width:100px;
+    height:30px;
+    background:#262A41;
+    line-height: 30px;
+    font-size:22px;
+}
+
+.bet-level-select-box span:nth-child(1){
+    margin-right:20px;
+}
+
+.bet-level-select-box span:nth-child(2){
+    margin-right:20px;
+}
+
+.bet-level-select-item a{
+    text-decoration: none;
+}
+
+.bet-level-select-item a:hover{
+    color:greenyellow;
+    text-decoration: none;
+    cursor:pointer;
+}
+
+.bet-level-selected{
+    color:red;
+}
+
+
+.bet-level-des{
+    margin-top:15px;
+    text-align: center;
+    font-size:18px;
+}
+
+
+
+
+.curr-bet-info-box{
+    height:110px;
+    background:#181B2A;
+    border-top:1px solid #181B2A;
+    margin-top:10px;
+}
+
+.curr-round-bet-info{
+    margin-top:10px;
+    margin-left:10px;
+}
+
+.curr-round-bet-info-left{
+    display:inline-block;
+    width:200px;
+    float:left;
+}
+
+.curr-round-bet-info-right{
+    display:inline-block;
+    width:200px;
+    float:right;
+}
+
+.curr-round-bet-item{
+
+}
+
+.curr-round-bet-item div:nth-child(1){
+    font-size:20px;
+}
+
+.curr-round-bet-item div:nth-child(2){
+    margin-top:20px;
+}
+
+.curr-round-bet-button{
+    width:150px;
+    height:30px;
+    background:#262A41;
+    line-height: 30px;
+    font-size:18px;
+    text-align: center;
+    margin-top:10px;
+}
+
+.curr-round-bet-button a{
+    text-decoration: none;
+}
+
+.curr-round-bet-button a:visited{
+    color: #C7CCE5;
+}
+
+.curr-round-bet-button a:hover{
+    color:greenyellow;
+}
+
+
+
+
+
+
+
+.prev-bet-info-box{
+    height:180px;
+    background:#181B2A;
+    border-top:1px solid #181B2A;
+    margin-top:10px;
+}
+
+.prev-round-bet-info{
+    margin-top:10px;
+    margin-left:10px;
+    font-size:14px;
+}
+
+
+.prev-round-bet-info div:nth-child(2){
+    margin-top:20px;
+}
+
+
+
+
+.new-winners-box{
+    height:180px;
+    background:#181B2A;
+    border-top:1px solid #181B2A;
+    margin-top:10px;
+}
+
+.new-winners-info{
+    margin-top:10px;
+    margin-left:10px;
+    font-size:14px;
+}
+
+.new-winners-bet-info-box{
+
+}
+
+.new-winner-bet-item{
+    font-size:12px;
+    margin-top:5px;
+}
+
+.new-winner-bet-info-item{
+    margin-top:1px;
+}
+
+.new-winner-bet-info-item span{
+    display:inline-block;
+    text-align: center;
+}
+
+.new-winner-bet-info-item span:nth-child(1){
+    width:90px;
+}
+
+.new-winner-bet-info-item span:nth-child(2){
+    width:90px;
+}
+
+.new-winner-bet-info-item span:nth-child(3){
+    width:300px;
+}
+
+
+
+
+
+
+
+
+.rules-box{
+    height:195px;
+    background:#181B2A;
+    border-top:1px solid #181B2A;
+    margin-top:10px;
+}
+
+.rules-info{
+    margin-top:10px;
+    margin-left:10px;
+    font-size:14px;
+}
+
+.to-check-detail-rules a{
+    color: #C7CCE5;
+}
+
+.to-check-detail-rules a:visited{
+    color: #C7CCE5;
+}
+
+.to-check-detail-rules a:hover {
+    color:greenyellow;
+    cursor:pointer;
+}
+
+
+
+
+
+
+.new-bets-box{
+    width:1024px;
+    margin:0 auto;
+    border:1px solid #262A41;
+    background:#181B2A;
+    margin-top:30px;
+}
+
+.new-bets-module-title{
+    margin-top:10px;
+    margin-left:10px;
+    font-size:18px;
+}
+
+.new-bets-box-content{
+    margin-top:10px;
+    margin-left:10px;
+    margin-bottom:10px;
+}
+
+
+.new-bets-box-content div:nth-child(1){
+    margin-bottom:10px;
+    font-weight: bold;
+}
+
+
+.new-bet-item span{
+    display:inline-block;
+    font-size:14px;
+    text-align: center;
+}
+
+
+.new-bet-item span:nth-child(1){
+    width:100px;
+}
+
+.new-bet-item span:nth-child(2){
+    width:80px;
+}
+
+.new-bet-item span:nth-child(3){
+    width:60px;
+}
+
+.new-bet-item span:nth-child(4){
+    width:60px;
+}
+
+.new-bet-item span:nth-child(5){
+    width:80px;
+}
+
+.new-bet-item span:nth-child(6){
+    width:340px;
+}
+
+.new-bet-item span:nth-child(7){
+    width:160px;
+}
+
+
+
+
+
+
+.settled-bets-box{
+    width:1024px;
+    margin:0 auto;
+    border:1px solid #262A41;
+    background:#181B2A;
+    margin-top:10px;
+    margin-bottom:30px;
+}
+
+
+.settled-bets-module-title{
+    margin-top:10px;
+    margin-left:10px;
+    font-size:18px;
+}
+
+.new-settled-bet-content{
+    margin-top:10px;
+    margin-left:10px;
+    margin-bottom:10px;
+}
+
+
+.new-settled-bet-content div:nth-child(1){
+    margin-bottom:10px;
+    font-weight: bold;
+}
+
+
+.new-settled-bet-item span{
+    display:inline-block;
+    font-size:14px;
+    text-align: center;
+
+}
+
+
+.new-settled-bet-item span:nth-child(1){
+    width:100px;
+}
+
+.new-settled-bet-item span:nth-child(2){
+    width:80px;
+}
+
+.new-settled-bet-item span:nth-child(3){
+    width:60px;
+}
+
+.new-settled-bet-item span:nth-child(4){
+    width:60px;
+}
+
+.new-settled-bet-item span:nth-child(5){
+    width:80px;
+}
+
+.new-settled-bet-item span:nth-child(6){
+    width:80px;
+}
+
+.new-settled-bet-item span:nth-child(7){
+    width:340px;
+}
+
+.new-settled-bet-item span:nth-child(8){
+    width:160px;
+}
+
+
+
+/*
+
+.curr-bet-info{
+    width:100%;
+    height:200px;
+}
+
+
+.lucky-player{
+    width:100%;
+    height:200px;
+}
+
+
+.bet-rules{
+    width:100%;
+    height:200px;
+}
+
+
+
+.curr-unsettle-bets{
+
+}
+
+.curr-unsettle-bets div:nth-child(1){
+    width:100%;
+    font-size:18px;
+}
+
+
+.bet-item{
+    font-size:14px;
+}
+
+.bet-item span{
+    display:inline-block;
+    text-align: center;
+}
+
+.bet-item span:nth-child(1){
+    width:120px;
+}
+
+
+.bet-item span:nth-child(2){
+    width:120px;
+}
+
+.bet-item span:nth-child(3){
+    width:120px;
+}
+
+.bet-item span:nth-child(4){
+    width:200px;
+}
+
+*/

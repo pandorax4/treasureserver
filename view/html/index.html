@@ -1,0 +1,523 @@
+﻿<html>
+<head>
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.17/vue.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/purecss@0.6.1/build/pure-min.css"
+          integrity="sha384-CCTZv2q9I9m3UOxRLaJneXrrqKwUNOzZ6NGEUMwHtShDJ+nCoiXJCAgi05KfkLGY" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="./assets/css/index.css"/>
+    <link rel="stylesheet" type="text/css" href="./assets/css/common.css"/>
+    <script src="../assets/js/util.js"></script>
+
+    <style>
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div id="games" v-cloak>
+
+        <header>
+            <div class="header-title">
+                GeekCash Games
+            </div>
+
+            <div class="header-menu">
+                <span class="header-menu-item"><a href="#">主页</a></span>
+                <span class="header-menu-item"><a href="rules.html">规则及公平性</a></span>
+                <span class="header-menu-item"><a href="https://aiodex.com/exchange/GEEK_BTC">购买GeekCash</a></span>
+                <span class="header-menu-item"><a href="smallbet/history.html">历史游戏</a></span>
+                <span class="header-menu-item">
+                    <a href="" v-on:click="setEnglish">English</a> |
+                    <a href="" v-on:click="setChinese"> 中文</a>
+                </span>
+            </div>
+        </header>
+
+        <div class="content-box">
+            <div class="content-side float-left">
+
+                <div class="game-story">
+                    <div>幸运轮盘，快速赢取大额 GeekCash</div><br>
+                    <div class="game-story-des">
+                        你的幸运数字，向对应的地址转入至少
+                        <span v-if="bet_level == 1">{{ index_data.small_bets.min_bet_amount }}</span>
+                        <span v-if="bet_level == 2">{{ index_data.big_bets.min_bet_amount }}</span>
+                        <span v-if="bet_level == 3">{{ index_data.large_bets.min_bet_amount }}</span>
+                        个GeekCash进行下注，然后等待开奖
+                    </div>
+                </div>
+
+                <div class="bet-address-box">
+                    <!-- Small bet addresses box start -->
+                    <div class="" id="small-bet-address-box" v-if="bet_level == 1">
+
+                        <div class="bet-address" v-for="item in index_data.small_bets.addresses">
+                            <div class="bet-address-number">
+                                {{ item.number }}
+                            </div>
+                            <div class="bet-address-info">
+                                <div>
+                                    总下注次数: {{ item.total_bet_count }}&nbsp;&nbsp;&nbsp;&nbsp;总下注金额: {{ item.total_bet_amount }}&nbsp;&nbsp;&nbsp;&nbsp;获胜次数: {{ item.total_win_count }}
+                                </div>
+
+                                <div>
+                                    {{ item.address }}
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <!-- Small bet addresses box end -->
+
+                    <!-- big bet addresses box start -->
+                    <div id="big-bet-address-box" v-if="bet_level == 2">
+
+                        <div class="bet-address" v-for="item in index_data.big_bets.addresses">
+                            <div class="bet-address-number">
+                                {{ item.number }}
+                            </div>
+                            <div class="bet-address-info">
+                                <div>
+                                    总下注次数: {{ item.total_bet_count }}&nbsp;&nbsp;&nbsp;&nbsp;总下注金额: {{ item.total_bet_amount }}&nbsp;&nbsp;&nbsp;&nbsp;获胜次数: {{ item.total_win_count }}
+                                </div>
+
+                                <div>
+                                    {{ item.address }}
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <!-- big bet addresses box end -->
+
+                    <!-- large bet addresses box start -->
+                    <div id="large-bet-address-box" v-if="bet_level == 3">
+
+                        <div class="bet-address" v-for="item in index_data.large_bets.addresses">
+                            <div class="bet-address-number">
+                                {{ item.number }}
+                            </div>
+                            <div class="bet-address-info">
+                                <div>
+                                    总下注次数: {{ item.total_bet_count }}&nbsp;&nbsp;&nbsp;&nbsp;总下注金额: {{ item.total_bet_amount }}&nbsp;&nbsp;&nbsp;&nbsp;获胜次数: {{ item.total_win_count }}
+                                </div>
+
+                                <div>
+                                    {{ item.address }}
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <!-- large bet addresses box end -->
+                </div>
+
+            </div>
+
+
+            <div class="content-side float-right">
+
+                <div class="bet-amount-menu-box">
+                    <div class="bet-amount-menu-content">
+                        <div class="bet-level-select-box">
+                            <span class="bet-level-select-item" v-bind:class="{ 'bet-level-selected': selected_small_bet }"><a v-on:click="showSmallBet">小赌注</a></span>
+                            <span class="bet-level-select-item" v-bind:class="{ 'bet-level-selected': selected_big_bet }"><a v-on:click="showBigBet">中赌注</a></span>
+                            <span class="bet-level-select-item" v-bind:class="{ 'bet-level-selected': selected_large_bet }"><a v-on:click="showLargeBet">大赌注</a></span>
+                        </div>
+
+                        <div class="bet-level-des">
+                            <span class="bet-level-des-item" v-if="bet_level == 1">
+                                最低下注金额 <span style="color:red;">{{ index_data.small_bets.min_bet_amount }}</span> GeekCash
+                            </span>
+
+                            <span class="bet-level-des-item" v-if="bet_level == 2">
+                                最低下注金额 <span style="color:red;">{{ index_data.big_bets.min_bet_amount }}</span> GeekCash
+                            </span>
+
+                            <span class="bet-level-des-item" v-if="bet_level == 3">
+                                最低下注金额 <span style="color:red;">{{ index_data.large_bets.min_bet_amount }}</span> GeekCash
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="curr-bet-info-box">
+                    <div class="curr-round-bet-info">
+                        <div class="curr-round-bet-info-left">
+                            <div class="curr-round-bet-item" v-if="bet_level == 1">
+                                <div>第{{ index_data.small_bets.curr_bet_info.round }}轮游戏(小赌注):</div>
+                                <div>本轮下注数量: {{ index_data.small_bets.curr_bet_info.bet_count }}</div>
+                                <div>本轮下注总额: {{ index_data.small_bets.curr_bet_info.bet_amount }}</div>
+                            </div>
+
+                            <div class="curr-round-bet-item" v-if="bet_level == 2">
+                                <div>第{{ index_data.big_bets.curr_bet_info.round }}轮游戏(中赌注):</div>
+                                <div>本轮下注数量: {{ index_data.big_bets.curr_bet_info.bet_count }}</div>
+                                <div>本轮下注总额: {{ index_data.big_bets.curr_bet_info.bet_amount }}</div>
+                            </div>
+
+                            <div class="curr-round-bet-item" v-if="bet_level == 3">
+                                <div>第{{ index_data.large_bets.curr_bet_info.round }}轮游戏(大赌注):</div>
+                                <div>本轮下注数量: {{ index_data.large_bets.curr_bet_info.bet_count }}</div>
+                                <div>本轮下注总额: {{ index_data.large_bets.curr_bet_info.bet_amount }}</div>
+                            </div>
+                        </div>
+                        <div class="curr-round-bet-info-right">
+                            <div class="curr-round-bet-button"><a href="https://aiodex.com/exchange/GEEK_BTC">购买GeekCash</a></div>
+                            <div class="curr-round-bet-button"><a href="">所有历史游戏</a></div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="prev-bet-info-box">
+                    <div class="prev-round-bet-info" v-if="bet_level == 1">
+                        <div class="module-title">上轮游戏结果(小赌注):</div>
+                        <div>下注数量: {{ index_data.small_bets.prev_bet_info.bet_count }}</div>
+                        <div>下注总额: {{ index_data.small_bets.prev_bet_info.bet_amount }}</div>
+                        <div>赢家数量: {{ index_data.small_bets.prev_bet_info.winner_count }}</div>
+                        <div>输家数量: {{ index_data.small_bets.prev_bet_info.loser_count }}</div>
+                        <div>奖金总额: {{ index_data.small_bets.prev_bet_info.total_reward }}</div>
+                        <div>开奖数字: {{ index_data.small_bets.prev_bet_info.bet_number }}</div>
+                    </div>
+
+                    <div class="prev-round-bet-info" v-if="bet_level == 2">
+                        <div class="module-title">上轮游戏结果(中赌注):</div>
+                        <div>下注数量: {{ index_data.big_bets.prev_bet_info.bet_count }}</div>
+                        <div>下注总额: {{ index_data.big_bets.prev_bet_info.bet_amount }}</div>
+                        <div>赢家数量: {{ index_data.big_bets.prev_bet_info.winner_count }}</div>
+                        <div>输家数量: {{ index_data.big_bets.prev_bet_info.loser_count }}</div>
+                        <div>奖金总额: {{ index_data.big_bets.prev_bet_info.total_reward }}</div>
+                        <div>开奖数字: {{ index_data.big_bets.prev_bet_info.bet_number }}</div>
+                    </div>
+
+                    <div class="prev-round-bet-info" v-if="bet_level == 3">
+                        <div class="module-title">上轮游戏结果(大赌注):</div>
+                        <div>下注数量: {{ index_data.large_bets.prev_bet_info.bet_count }}</div>
+                        <div>下注总额: {{ index_data.large_bets.prev_bet_info.bet_amount }}</div>
+                        <div>赢家数量: {{ index_data.large_bets.prev_bet_info.winner_count }}</div>
+                        <div>输家数量: {{ index_data.large_bets.prev_bet_info.loser_count }}</div>
+                        <div>奖金总额: {{ index_data.large_bets.prev_bet_info.total_reward }}</div>
+                        <div>开奖数字: {{ index_data.large_bets.prev_bet_info.bet_number }}</div>
+                    </div>
+                </div>
+
+
+                <div class="new-winners-box">
+                    <div class="new-winners-info">
+                        <div class="module-title">最新赢家:</div>
+                        <div class="new-winners-bet-info-box">
+
+                            <div class="new-winner-bet-info-item">
+                                <span>Txid</span>
+                                <span>收益</span>
+                                <span>玩家地址</span>
+                            </div>
+
+                            <div class="new-winner-bet-item" v-if="bet_level == 1">
+                                <div class="new-winner-bet-info-item" v-for="item in index_data.small_bets.recently_winners">
+                                    <span>{{ item.short_txid }}</span>
+                                    <span>{{ item.bet_reward }}</span>
+                                    <span>{{ item.player_address }}</span>
+                                </div>
+                            </div>
+
+                            <div class="new-winner-bet-item" v-if="bet_level == 2">
+                                <div class="new-winner-bet-info-item" v-for="item in index_data.big_bets.recently_winners">
+                                    <span>{{ item.short_txid }}</span>
+                                    <span>{{ item.bet_reward }}</span>
+                                    <span>{{ item.player_address }}</span>
+                                </div>
+                            </div>
+
+                            <div class="new-winner-bet-item" v-if="bet_level == 3">
+                                <div class="new-winner-bet-info-item" v-for="item in index_data.large_bets.recently_winners">
+                                    <span>{{ item.short_txid }}</span>
+                                    <span>{{ item.bet_reward }}</span>
+                                    <span>{{ item.player_address }}</span>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="rules-box">
+                    <div class="rules-info">
+                        <div class="module-title">玩法及规则:</div><br>
+                        <div class="rule-items">
+                            <span>1. 选择一个数字进行下注<span style="color:red">(请不要从任何交易所地址下注)</span></span><br>
+                            <span>2. 下注金额必须>=最低下注金额，否则会自动输掉下注。</span><br>
+                            <span>3. 每轮游戏，赢家下注金额全部返还，然后按下注比例瓜分所有输家下注金额。</span><br>
+                            <span>4. 在一轮游戏期间，至少产生一个赢家和一个输家，则本轮游戏结束，下轮游戏自动开始。</span><br>
+                            <span  class="to-check-detail-rules">5. <a href="rules.html">-->(查看详细游戏规则)</a></span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="new-bets-box">
+            <div class="new-bets-module-title">最新下注</div>
+            <div class="new-bets-box-content">
+                <div class="new-bet-item">
+                    <span>Txid</span>
+                    <span>第几轮游戏</span>
+                    <span>下注等级</span>
+                    <span>下注数字</span>
+                    <span>下注金额</span>
+                    <span>玩家地址</span>
+                    <span>下注时间</span>
+                </div>
+
+                <div class="new-bet-item" v-for="item in index_data.recently_unsettle_bets">
+                    <span>{{ item.short_txid }}</span>
+                    <span>{{ item.bet_round }}</span>
+                    <span v-if="item.bet_level == 1">小赌注</span>
+                    <span v-if="item.bet_level == 2">中赌注</span>
+                    <span v-if="item.bet_level == 3">大赌注</span>
+                    <span>{{ item.bet_number }}</span>
+                    <span>{{ item.bet_amount }}</span>
+                    <span>{{ item.player_address }}</span>
+                    <span>{{ item.join_time }}</span>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="settled-bets-box">
+            <div class="settled-bets-module-title">最新结算下注</div>
+            <div class="new-settled-bet-content">
+                <div class="new-settled-bet-item">
+                    <span>Txid</span>
+                    <span>第几轮游戏</span>
+                    <span>下注等级</span>
+                    <span>下注数字</span>
+                    <span>下注金额</span>
+                    <span>下注收益</span>
+                    <span>玩家地址</span>
+                    <span>下注时间</span>
+                </div>
+
+                <div class="new-settled-bet-item" v-for="item in index_data.recently_settled_bets">
+                    <span>{{ item.short_txid }}</span>
+                    <span>{{ item.bet_round }}</span>
+                    <span v-if="item.bet_level == 1">小赌注</span>
+                    <span v-if="item.bet_level == 2">中赌注</span>
+                    <span v-if="item.bet_level == 3">大赌注</span>
+                    <span>{{ item.bet_number }}</span>
+                    <span>{{ item.bet_amount }}</span>
+                    <span>{{ item.bet_reward }}</span>
+                    <span>{{ item.player_address }}</span>
+                    <span>{{ item.join_time }}</span>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</body>
+
+
+
+<script>
+    var games = new Vue({
+      el: '#games',
+      data: {
+        index_data:{
+            "small_bets": {
+                "addresses": [],
+                "min_bet_amount": "",
+                "curr_bet_info": {
+                    "round": "",
+                    "bet_count": "",
+                    "bet_amount": ""
+                },
+                "prev_bet_info": {
+                    "round": "",
+                    "bet_count": "",
+                    "bet_amount": "",
+                    "winner_count": "",
+                    "loser_count": "",
+                    "total_reward": "",
+                    "bet_number": ""
+                }
+            },
+            "big_bets": {
+                "addresses": [],
+                "min_bet_amount": "",
+                "curr_bet_info": {
+                    "round": "",
+                    "bet_count": "",
+                    "bet_amount": ""
+                },
+                "prev_bet_info": {
+                    "round": "",
+                    "bet_count": "",
+                    "bet_amount": "",
+                    "winner_count": "",
+                    "loser_count": "",
+                    "total_reward": "",
+                    "bet_number": ""
+                }
+            },
+            "large_bets": {
+                "addresses": [],
+                "min_bet_amount": "",
+                "curr_bet_info": {
+                    "round": "",
+                    "bet_count": "",
+                    "bet_amount": ""
+                },
+                "prev_bet_info": {
+                    "round": "",
+                    "bet_count": "",
+                    "bet_amount": "",
+                    "winner_count": "",
+                    "loser_count": "",
+                    "total_reward": "",
+                    "bet_number": ""
+                }
+            },
+            "recently_unsettle_bets": [],
+            "recently_settled_bets": [],
+            "recently_winners": [],
+            },
+          bet_level: 1,
+          selected_small_bet: true,
+          selected_big_bet: false,
+          selected_large_bet: false,
+
+          lang_en : {
+
+          },
+          lang_ch :{
+
+          },
+
+          curr_lan : this.lang_en,
+
+      },
+      // 在 `methods` 对象中定义方法
+      methods: {
+            refreshData: function(data){
+                this.index_data = data;
+            },
+            showSmallBet: function(event){
+                this.bet_level = 1;
+                this.selected_small_bet = true;
+                this.selected_big_bet = false;
+                this.selected_large_bet = false;
+            },
+            showBigBet: function(event){
+                this.bet_level = 2;
+                this.selected_small_bet = false;
+                this.selected_big_bet = true;
+                this.selected_large_bet = false;
+            },
+            showLargeBet: function(event){
+                this.bet_level = 3;
+                this.selected_small_bet = false;
+                this.selected_big_bet = false;
+                this.selected_large_bet = true;
+            },
+            setChinese: function(event){
+                let currUrl = window.location.toString();
+                /*
+                var index = currUrl.indexOf('/en/');
+                if(index < 0){
+                    alert("Already in Chinese!");
+                    return;
+                }
+                var urlRoot = currUrl.substring(0,index);
+                var urlRoute = currUrl.substring(index);
+
+                var currLanguage = urlRoute.substring(0,4);
+                var currPage = urlRoute.substring(4);
+
+                if(currLanguage == "/en/"){
+                    alert("Set to chinese");
+
+                    var newUrl = urlRoot + "/ch/" + currPage;
+                    alert(newUrl);
+
+                    window.location = newUrl;
+                }
+                else{
+                    alert("Already in chinese");
+                }
+                */
+                setChineseLangCookie();
+                window.location = currUrl;
+
+            },
+            setEnglish: function(event){
+                let currUrl = window.location.toString();
+                /*
+                var index = currUrl.indexOf('/ch/');
+                if(index < 0){
+                    alert("Already in english");
+                    return;
+                }
+                var urlRoot = currUrl.substring(0,index);
+                var urlRoute = currUrl.substring(index);
+
+                var currLanguage = urlRoute.substring(0,4);
+                var currPage = urlRoute.substring(4);
+
+                if(currLanguage == "/ch/"){
+                    alert("Set to english 111");
+                    setEnglishLangCookie();
+                    var newUrl = urlRoot + "/en/" + currPage;
+                    alert(newUrl);
+                    window.location = newUrl;
+                }
+                else{
+                    alert("Already in english");
+                }
+                */
+                setEnglishLangCookie();
+                window.location = currUrl;
+            },
+
+      }
+    })
+
+    setTimeout(function(){ refresh();});
+    setInterval(function(){refresh();}, 3000);
+    function refresh(){
+        $.ajax({
+            dataType: "json",
+            type: "GET",
+            url: "./index.json",
+            cache: false,
+            success: function(data){
+                games.refreshData(data);
+            },
+            error: function(){
+                //alert("error")
+            }
+        });
+    }
+
+    $(function(){
+
+        alert("html页面加载完成后二");
+        games.bet_level = 2;
+
+    });
+
+
+</script>
+
+
+
+
+
+</html>

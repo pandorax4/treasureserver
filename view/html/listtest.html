@@ -1,0 +1,27 @@
+<html>
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.17/vue.js"></script>
+</head>
+
+<body>
+    <ul id="example-1">
+        <div v-for="item in items" style="color:red">
+            {{ item.name }} - {{ item.age }}
+        </div>
+    </ul>
+</body>
+
+
+<script>
+    var example1 = new Vue({
+        el: '#example-1',
+        data: {
+            items: null,
+        }
+    })
+
+</script>
+
+
+
+</html>

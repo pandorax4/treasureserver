@@ -1,0 +1,942 @@
+<html>
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.17/vue.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/purecss@0.6.1/build/pure-min.css"
+          integrity="sha384-CCTZv2q9I9m3UOxRLaJneXrrqKwUNOzZ6NGEUMwHtShDJ+nCoiXJCAgi05KfkLGY" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="./assets/css/index.css"/>
+    <link rel="stylesheet" type="text/css" href="./assets/css/common.css"/>
+    <script src="../assets/js/util.js"></script>
+</head>
+
+<body>
+
+    <div id="games">
+
+        <header>
+            <div class="header-title">
+                GeekCash Games
+            </div>
+
+            <div class="header-menu">
+                <span class="header-menu-item"><a href="#">主页</a></span>
+                <span class="header-menu-item"><a href="rules.html">规则及公平性</a></span>
+                <span class="header-menu-item"><a href="https://aiodex.com/exchange/GEEK_BTC">购买GeekCash</a></span>
+                <span class="header-menu-item"><a href="smallbet/history.html">历史游戏</a></span>
+                <span class="header-menu-item">
+                    <a href="" v-on:click="setEnglish">English</a> |
+                    <a href="" v-on:click="setChinese"> 中文</a>
+                </span>
+            </div>
+        </header>
+
+        <div class="content-box">
+            <div class="content-side float-left">
+
+                <div class="game-story">
+                    <div>幸运轮盘，快速赢取大额 GeekCash</div><br>
+                    <div class="game-story-des">选择你的幸运数字，向对应的地址转入至少 1000 个GeekCash进行下注，然后等待开奖</div>
+                </div>
+
+                <div class="bet-address-box">
+                    <!-- Small bet addresses box start -->
+                    <div class="" id="small-bet-address-box">
+
+                        <div class="bet-address" id="small-address-0">
+                            <div class="bet-address-number">
+                                0
+                            </div>
+                            <div class="bet-address-info">
+
+                                <div>
+                                    总下注次数: 1&nbsp;&nbsp;&nbsp;&nbsp;总下注金额: 20.0&nbsp;&nbsp;&nbsp;&nbsp;获胜次数: 0
+                                </div>
+
+                                <div>
+                                    GSpKep8LykJKm81qY7zrg3aCFXw81Emv3g
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bet-address" id="small-address-1">
+                            <div class="bet-address-number">
+                                1
+                            </div>
+                            <div class="bet-address-info">
+                                <div>
+                                    总下注次数: 0&nbsp;&nbsp;&nbsp;&nbsp;总下注金额: 0&nbsp;&nbsp;&nbsp;&nbsp;获胜次数: 0
+                                </div>
+
+                                <div>
+                                    GJay7UY2fr3NQAh39QLTNgSGvxoALam15Q
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bet-address" id="small-address-2">
+                            <div class="bet-address-number">
+                                2
+                            </div>
+                            <div class="bet-address-info">
+                                <div>
+                                    总下注次数: 1&nbsp;&nbsp;&nbsp;&nbsp;总下注金额: 30.0&nbsp;&nbsp;&nbsp;&nbsp;获胜次数: 1
+                                </div>
+
+                                <div>
+                                    GQPwNqgLBZgy9fF6oAHDrsPwjpn8hkv6ps
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bet-address" id="small-address-3">
+                            <div class="bet-address-number">
+                                3
+                            </div>
+                            <div class="bet-address-info">
+                                <div>
+                                    总下注次数: 0&nbsp;&nbsp;&nbsp;&nbsp;总下注金额: 0&nbsp;&nbsp;&nbsp;&nbsp;获胜次数: 0
+                                </div>
+
+                                <div>
+                                    GU7PoHXqbNPMEWBFBpknbaWCrEGHyxffRM
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bet-address" id="small-address-4">
+                            <div class="bet-address-number">
+                                4
+                            </div>
+                            <div class="bet-address-info">
+                                <div>
+                                    总下注次数: 1&nbsp;&nbsp;&nbsp;&nbsp;总下注金额: 20.0&nbsp;&nbsp;&nbsp;&nbsp;获胜次数: 0
+                                </div>
+
+                                <div>
+                                    GVff9cd4fys86xDkw19u9PRvC7eVcocqgm
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bet-address" id="small-address-5">
+                            <div class="bet-address-number">
+                                5
+                            </div>
+                            <div class="bet-address-info">
+                                <div>
+                                    总下注次数: 0&nbsp;&nbsp;&nbsp;&nbsp;总下注金额: 0&nbsp;&nbsp;&nbsp;&nbsp;获胜次数: 0
+                                </div>
+
+                                <div>
+                                    GackSaABimoSk6AW3GYofKhzb8gppBN1cS
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bet-address" id="small-address-6">
+                            <div class="bet-address-number">
+                                6
+                            </div>
+                            <div class="bet-address-info">
+                                <div>
+                                    总下注次数: 0&nbsp;&nbsp;&nbsp;&nbsp;总下注金额: 0&nbsp;&nbsp;&nbsp;&nbsp;获胜次数: 0
+                                </div>
+
+                                <div>
+                                    GXxmvo4emzCMYNGuksmPQSYtvR6xwcdb2b
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bet-address" id="small-address-7">
+                            <div class="bet-address-number">
+                                7
+                            </div>
+                            <div class="bet-address-info">
+                                <div>
+                                    总下注次数: 0&nbsp;&nbsp;&nbsp;&nbsp;总下注金额: 0&nbsp;&nbsp;&nbsp;&nbsp;获胜次数: 0
+                                </div>
+
+                                <div>
+                                    Gf1xxqpXQjtSpDDCVksvvenUjiec6Ft5jL
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bet-address" id="small-address-8">
+                            <div class="bet-address-number">
+                                8
+                            </div>
+                            <div class="bet-address-info">
+                                <div>
+                                    总下注次数: 0&nbsp;&nbsp;&nbsp;&nbsp;总下注金额: 0&nbsp;&nbsp;&nbsp;&nbsp;获胜次数: 0
+                                </div>
+
+                                <div>
+                                    GcQUabLD1Yh9cyu4Q82brzyCvvWSW8fmeQ
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bet-address" id="small-address-9">
+                            <div class="bet-address-number">
+                                9
+                            </div>
+                            <div class="bet-address-info">
+                                <div>
+                                    总下注次数: 0&nbsp;&nbsp;&nbsp;&nbsp;总下注金额: 0&nbsp;&nbsp;&nbsp;&nbsp;获胜次数: 0
+                                </div>
+
+                                <div>
+                                    GHtZJ6YPT2CPeN9xxWbxEhs2sokiwq9XK5
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Small bet addresses box end -->
+
+                    <!-- big bet addresses box start -->
+                    <div class="hide" id="big-bet-address-box">
+
+                        <div class="bet-address" id="big-address-0">
+                            <div class="bet-address-number">
+                                0
+                            </div>
+                            <div class="bet-address-info">
+                                <div>
+                                    总下注次数: 0&nbsp;&nbsp;&nbsp;&nbsp;总下注金额: 0&nbsp;&nbsp;&nbsp;&nbsp;获胜次数: 0
+                                </div>
+
+                                <div>
+                                    GfWJtnA5B7J5AAmTeibq7ypyFWN75YHyUB
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bet-address" id="big-address-1">
+                            <div class="bet-address-number">
+                                1
+                            </div>
+                            <div class="bet-address-info">
+                                <div>
+                                    总下注次数: 0&nbsp;&nbsp;&nbsp;&nbsp;总下注金额: 0&nbsp;&nbsp;&nbsp;&nbsp;获胜次数: 0
+                                </div>
+
+                                <div>
+                                    GWLGRVs5iDiyNuiZNwWDDfzzL2MhH3jt54
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bet-address" id="big-address-2">
+                            <div class="bet-address-number">
+                                2
+                            </div>
+                            <div class="bet-address-info">
+                                <div>
+                                    总下注次数: 0&nbsp;&nbsp;&nbsp;&nbsp;总下注金额: 0&nbsp;&nbsp;&nbsp;&nbsp;获胜次数: 0
+                                </div>
+
+                                <div>
+                                    GSJveizttoE3bMSSrLL8PhoSkp44hr3eGc
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bet-address" id="big-address-3">
+                            <div class="bet-address-number">
+                                3
+                            </div>
+                            <div class="bet-address-info">
+                                <div>
+                                    总下注次数: 0&nbsp;&nbsp;&nbsp;&nbsp;总下注金额: 0&nbsp;&nbsp;&nbsp;&nbsp;获胜次数: 0
+                                </div>
+
+                                <div>
+                                    GNJbcQEpX7oQZiXK9ktPdJQAmti5GTfN2q
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bet-address" id="big-address-4">
+                            <div class="bet-address-number">
+                                4
+                            </div>
+                            <div class="bet-address-info">
+                                <div>
+                                    总下注次数: 0&nbsp;&nbsp;&nbsp;&nbsp;总下注金额: 0&nbsp;&nbsp;&nbsp;&nbsp;获胜次数: 0
+                                </div>
+
+                                <div>
+                                    GJscy2XRvFtgtnEnKqnmHVWhP3X6CmDRAB
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bet-address" id="big-address-5">
+                            <div class="bet-address-number">
+                                5
+                            </div>
+                            <div class="bet-address-info">
+                                <div>
+                                    总下注次数: 0&nbsp;&nbsp;&nbsp;&nbsp;总下注金额: 0&nbsp;&nbsp;&nbsp;&nbsp;获胜次数: 0
+                                </div>
+
+                                <div>
+                                    GZMoNrMCtYpGaTAKWebin7YBSCk11xAGVT
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bet-address" id="big-address-6">
+                            <div class="bet-address-number">
+                                6
+                            </div>
+                            <div class="bet-address-info">
+                                <div>
+                                    总下注次数: 0&nbsp;&nbsp;&nbsp;&nbsp;总下注金额: 0&nbsp;&nbsp;&nbsp;&nbsp;获胜次数: 0
+                                </div>
+
+                                <div>
+                                    GMgCuDJKseMkN3ZaBoZTkSS69hJu7S975r
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bet-address" id="big-address-7">
+                            <div class="bet-address-number">
+                                7
+                            </div>
+                            <div class="bet-address-info">
+                                <div>
+                                    总下注次数: 0&nbsp;&nbsp;&nbsp;&nbsp;总下注金额: 0&nbsp;&nbsp;&nbsp;&nbsp;获胜次数: 0
+                                </div>
+
+                                <div>
+                                    Gen9xdsaZAUvog4xZjiagmau6XoqSYQuUQ
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bet-address" id="big-address-8">
+                            <div class="bet-address-number">
+                                8
+                            </div>
+                            <div class="bet-address-info">
+                                <div>
+                                    总下注次数: 0&nbsp;&nbsp;&nbsp;&nbsp;总下注金额: 0&nbsp;&nbsp;&nbsp;&nbsp;获胜次数: 0
+                                </div>
+
+                                <div>
+                                    GPuyBYJhGZPYahM5EWN9t5SHzQRiFFseRz
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bet-address" id="big-address-9">
+                            <div class="bet-address-number">
+                                9
+                            </div>
+                            <div class="bet-address-info">
+                                <div>
+                                    总下注次数: 0&nbsp;&nbsp;&nbsp;&nbsp;总下注金额: 0&nbsp;&nbsp;&nbsp;&nbsp;获胜次数: 0
+                                </div>
+
+                                <div>
+                                    GdNpkXsqfQYYrFuRnW7KGiUjY92uQRHG2m
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- big bet addresses box end -->
+
+                    <!-- large bet addresses box start -->
+                    <div class="hide" id="large-bet-address-box">
+
+                        <div class="bet-address" id="large-address-0">
+                            <div class="bet-address-number">
+                                0
+                            </div>
+                            <div class="bet-address-info">
+                                <div>
+                                    总下注次数: 0&nbsp;&nbsp;&nbsp;&nbsp;总下注金额: 0&nbsp;&nbsp;&nbsp;&nbsp;获胜次数: 0
+                                </div>
+
+                                <div>
+                                    Gb32vzzKhXYuuU2aFqgLT6hmyFt3AyXNKj
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bet-address" id="large-address-1">
+                            <div class="bet-address-number">
+                                1
+                            </div>
+                            <div class="bet-address-info">
+                                <div>
+                                    总下注次数: 0&nbsp;&nbsp;&nbsp;&nbsp;总下注金额: 0&nbsp;&nbsp;&nbsp;&nbsp;获胜次数: 0
+                                </div>
+
+                                <div>
+                                    GHrtdsirbMWgzT5yoop66gfoX78JshHoDr
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bet-address" id="large-address-2">
+                            <div class="bet-address-number">
+                                2
+                            </div>
+                            <div class="bet-address-info">
+                                <div>
+                                    总下注次数: 0&nbsp;&nbsp;&nbsp;&nbsp;总下注金额: 0&nbsp;&nbsp;&nbsp;&nbsp;获胜次数: 0
+                                </div>
+
+                                <div>
+                                    GQLPnvdTp8vhVFtkyYv5c46rTy83xcYz1J
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bet-address" id="large-address-3">
+                            <div class="bet-address-number">
+                                3
+                            </div>
+                            <div class="bet-address-info">
+                                <div>
+                                    总下注次数: 0&nbsp;&nbsp;&nbsp;&nbsp;总下注金额: 0&nbsp;&nbsp;&nbsp;&nbsp;获胜次数: 0
+                                </div>
+
+                                <div>
+                                    GPWvEsqbwBHBn9yK3WFEGBBdsa4PacKrii
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bet-address" id="large-address-4">
+                            <div class="bet-address-number">
+                                4
+                            </div>
+                            <div class="bet-address-info">
+                                <div>
+                                    总下注次数: 0&nbsp;&nbsp;&nbsp;&nbsp;总下注金额: 0&nbsp;&nbsp;&nbsp;&nbsp;获胜次数: 0
+                                </div>
+
+                                <div>
+                                    GgjoC6zamJgJrGNacvB2aA8fZWfrsn329C
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bet-address" id="large-address-5">
+                            <div class="bet-address-number">
+                                5
+                            </div>
+                            <div class="bet-address-info">
+                                <div>
+                                    总下注次数: 0&nbsp;&nbsp;&nbsp;&nbsp;总下注金额: 0&nbsp;&nbsp;&nbsp;&nbsp;获胜次数: 0
+                                </div>
+
+                                <div>
+                                    GWnwLgURcBiy3z7mNkKw1S9CSC4daZem5f
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bet-address" id="large-address-6">
+                            <div class="bet-address-number">
+                                6
+                            </div>
+                            <div class="bet-address-info">
+                                <div>
+                                    总下注次数: 0&nbsp;&nbsp;&nbsp;&nbsp;总下注金额: 0&nbsp;&nbsp;&nbsp;&nbsp;获胜次数: 0
+                                </div>
+
+                                <div>
+                                    GRvrxVsNyZRJks99L985kb1WwzQbYvrDfh
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bet-address" id="large-address-7">
+                            <div class="bet-address-number">
+                                7
+                            </div>
+                            <div class="bet-address-info">
+                                <div>
+                                    总下注次数: 0&nbsp;&nbsp;&nbsp;&nbsp;总下注金额: 0&nbsp;&nbsp;&nbsp;&nbsp;获胜次数: 0
+                                </div>
+
+                                <div>
+                                    GMyPVoaBHxzUdGuGqUK8PyyhKSdHQiLCAd
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bet-address" id="large-address-8">
+                            <div class="bet-address-number">
+                                8
+                            </div>
+                            <div class="bet-address-info">
+                                <div>
+                                    总下注次数: 0&nbsp;&nbsp;&nbsp;&nbsp;总下注金额: 0&nbsp;&nbsp;&nbsp;&nbsp;获胜次数: 0
+                                </div>
+
+                                <div>
+                                    GbqHuzoZ1E95SvuBWTmpp1ygGReLDgXAZd
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bet-address" id="large-address-9">
+                            <div class="bet-address-number">
+                                9
+                            </div>
+                            <div class="bet-address-info">
+                                <div>
+                                    总下注次数: 0&nbsp;&nbsp;&nbsp;&nbsp;总下注金额: 0&nbsp;&nbsp;&nbsp;&nbsp;获胜次数: 0
+                                </div>
+
+                                <div>
+                                    GL2J7EX3PXs6J4EAHtnkPD931KzjyEQvDW
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- large bet addresses box end -->
+                </div>
+
+            </div>
+
+
+
+
+            <div class="content-side float-right">
+
+                <div class="bet-amount-menu-box">
+                    <div class="bet-amount-menu-content">
+                        <div class="bet-level-select-box">
+                            <span class="bet-level-select-item bet-level-selected"><a v-on:click="showSmallBet">小赌注</a></span>
+                            <span class="bet-level-select-item"><a v-on:click="showBigBet">中赌注</a></span>
+                            <span class="bet-level-select-item"><a v-on:click="showLargeBet">大赌注</a></span>
+                        </div>
+
+                        <div class="bet-level-des">
+                            <span class="bet-level-des-item">
+                                最低下注金额 <span style="color:red;">1000</span> GeekCash
+                            </span>
+
+                            <span class="bet-level-des-item hide">
+                                最低下注金额 <span style="color:red;">10000</span> GeekCash
+                            </span>
+
+                            <span class="bet-level-des-item hide">
+                                最低下注金额 <span style="color:red;">100000</span> GeekCash
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="curr-bet-info-box">
+                    <div class="curr-round-bet-info">
+                        <div class="curr-round-bet-info-left">
+                            <div class="curr-round-bet-item">
+                                <div>第1轮游戏(小赌注):</div>
+                                <div>本轮下注数量: 1</div>
+                                <div>本轮下注总额: 5232</div>
+                            </div>
+
+                            <div class="curr-round-bet-item hide">
+                                <div>第1轮游戏(中赌注)</div>
+                                <div>本轮下注数量: 1</div>
+                                <div>本轮下注总额: 5232</div>
+                            </div>
+
+                            <div class="curr-round-bet-item hide">
+                                <div>第1轮游戏(大赌注)</div>
+                                <div>本轮下注数量: 1</div>
+                                <div>本轮下注总额: 5232</div>
+                            </div>
+                        </div>
+                        <div class="curr-round-bet-info-right">
+                            <div class="curr-round-bet-button"><a href="https://aiodex.com/exchange/GEEK_BTC">购买GeekCash</a></div>
+                            <div class="curr-round-bet-button"><a href="">所有历史游戏</a></div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="prev-bet-info-box">
+                    <div class="prev-round-bet-info">
+                        <div class="module-title">上轮游戏结果(小赌注):</div>
+                        <div>下注数量: 0</div>
+                        <div>下注总额: 0</div>
+                        <div>赢家数量: 0</div>
+                        <div>输家数量: 0</div>
+                        <div>奖金总额: 0</div>
+                        <div>开奖数字: 0</div>
+                    </div>
+
+                    <div class="prev-round-bet-info hide">
+                        <div class="module-title">上轮游戏结果(中赌注):</div>
+                        <div>下注数量: 0</div>
+                        <div>下注总额: 0</div>
+                        <div>赢家数量: 0</div>
+                        <div>输家数量: 0</div>
+                        <div>奖金总额: 0</div>
+                        <div>开奖数字: 0</div>
+                    </div>
+
+                    <div class="prev-round-bet-info hide">
+                        <div class="module-title">上轮游戏结果(大赌注):</div>
+                        <div>下注数量: 0</div>
+                        <div>下注总额: 0</div>
+                        <div>赢家数量: 0</div>
+                        <div>输家数量: 0</div>
+                        <div>奖金总额: 0</div>
+                        <div>开奖数字: 0</div>
+                    </div>
+                </div>
+
+
+                <div class="new-winners-box">
+                    <div class="new-winners-info">
+                        <div class="module-title">最新赢家:</div>
+                        <div class="new-winners-bet-info-box">
+
+                            <div class="new-winner-bet-info-item">
+                                <span>Txid</span>
+                                <span>收益</span>
+                                <span>玩家地址</span>
+                            </div>
+
+                            <div class="new-winner-bet-item">
+                                <div class="new-winner-bet-info-item">
+                                    <span>92972e9...</span>
+                                    <span>340008987</span>
+                                    <span>GNAhn5qgPA928AoZtE1ys61KNzwkZGP2ii</span>
+                                </div>
+                                <div class="new-winner-bet-info-item">
+                                    <span>92972e9...</span>
+                                    <span>340008987</span>
+                                    <span>GNAhn5qgPA928AoZtE1ys61KNzwkZGP2ii</span>
+                                </div>
+                                <div class="new-winner-bet-info-item">
+                                    <span>92972e9...</span>
+                                    <span>340008987</span>
+                                    <span>GNAhn5qgPA928AoZtE1ys61KNzwkZGP2ii</span>
+                                </div>
+                                <div class="new-winner-bet-info-item">
+                                    <span>92972e9...</span>
+                                    <span>340008987</span>
+                                    <span>GNAhn5qgPA928AoZtE1ys61KNzwkZGP2ii</span>
+                                </div>
+                                <div class="new-winner-bet-info-item">
+                                    <span>92972e9...</span>
+                                    <span>340008987</span>
+                                    <span>GNAhn5qgPA928AoZtE1ys61KNzwkZGP2ii</span>
+                                </div>
+                                <div class="new-winner-bet-info-item">
+                                    <span>92972e9...</span>
+                                    <span>340008987</span>
+                                    <span>GNAhn5qgPA928AoZtE1ys61KNzwkZGP2ii</span>
+                                </div>
+                                <div class="new-winner-bet-info-item">
+                                    <span>92972e9...</span>
+                                    <span>340008987</span>
+                                    <span>GNAhn5qgPA928AoZtE1ys61KNzwkZGP2ii</span>
+                                </div>
+
+                            </div>
+
+                            <div class="new-winner-bet-item hide">
+
+                            </div>
+
+                            <div class="new-winner-bet-item hide">
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="rules-box">
+                    <div class="rules-info">
+                        <div class="module-title">玩法及规则:</div><br>
+                        <div class="rule-items">
+                            <span>1. 选择一个数字进行下注<span style="color:red">(请不要从任何交易所地址下注)</span></span><br>
+                            <span>2. 下注金额必须>=最低下注金额，否则会自动输掉下注。</span><br>
+                            <span>3. 每轮游戏，赢家下注金额全部返还，然后按下注比例瓜分所有输家下注金额。</span><br>
+                            <span>4. 在一轮游戏期间，至少产生一个赢家和一个输家，则本轮游戏结束，下轮游戏自动开始。</span><br>
+                            <span  class="to-check-detail-rules">5. <a href="rules.html">-->(查看详细游戏规则)</a></span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="new-bets-box">
+            <div class="new-bets-module-title">最新下注</div>
+            <div class="new-bets-box-content">
+                <div class="new-bet-item">
+                    <span>Txid</span>
+                    <span>第几轮游戏</span>
+                    <span>下注等级</span>
+                    <span>下注数字</span>
+                    <span>下注金额</span>
+                    <span>玩家地址</span>
+                    <span>下注时间</span>
+                </div>
+
+                <div class="new-bet-item">
+                    <span>92972e980...</span>
+                    <span>2</span>
+                    <span>小赌注</span>
+                    <span>8</span>
+                    <span>325498745</span>
+                    <span>GNAhn5qgPA928AoZtE1ys61KNzwkZGP2ii</span>
+                    <span>2018-09-30 09:40:40</span>
+                </div>
+
+
+                <div class="new-bet-item">
+                    <span>92972e980...</span>
+                    <span>2</span>
+                    <span>小赌注</span>
+                    <span>8</span>
+                    <span>325498745</span>
+                    <span>GNAhn5qgPA928AoZtE1ys61KNzwkZGP2ii</span>
+                    <span>2018-09-30 09:40:40</span>
+                </div>
+
+                <div class="new-bet-item">
+                    <span>92972e980...</span>
+                    <span>2</span>
+                    <span>小赌注</span>
+                    <span>8</span>
+                    <span>325498745</span>
+                    <span>GNAhn5qgPA928AoZtE1ys61KNzwkZGP2ii</span>
+                    <span>2018-09-30 09:40:40</span>
+                </div>
+
+                <div class="new-bet-item">
+                    <span>92972e980...</span>
+                    <span>2</span>
+                    <span>小赌注</span>
+                    <span>8</span>
+                    <span>325498745</span>
+                    <span>GNAhn5qgPA928AoZtE1ys61KNzwkZGP2ii</span>
+                    <span>2018-09-30 09:40:40</span>
+                </div>
+
+                <div class="new-bet-item">
+                    <span>92972e980...</span>
+                    <span>2</span>
+                    <span>小赌注</span>
+                    <span>8</span>
+                    <span>325498745</span>
+                    <span>GNAhn5qgPA928AoZtE1ys61KNzwkZGP2ii</span>
+                    <span>2018-09-30 09:40:40</span>
+                </div>
+
+                <div class="new-bet-item">
+                    <span>92972e980...</span>
+                    <span>2</span>
+                    <span>小赌注</span>
+                    <span>8</span>
+                    <span>325498745</span>
+                    <span>GNAhn5qgPA928AoZtE1ys61KNzwkZGP2ii</span>
+                    <span>2018-09-30 09:40:40</span>
+                </div>
+
+                <div class="new-bet-item">
+                    <span>92972e980...</span>
+                    <span>2</span>
+                    <span>小赌注</span>
+                    <span>8</span>
+                    <span>325498745</span>
+                    <span>GNAhn5qgPA928AoZtE1ys61KNzwkZGP2ii</span>
+                    <span>2018-09-30 09:40:40</span>
+                </div>
+
+
+            </div>
+        </div>
+
+        <div class="settled-bets-box">
+            <div class="settled-bets-module-title">最新结算下注</div>
+            <div class="new-settled-bet-content">
+                <div class="new-settled-bet-item">
+                    <span>Txid</span>
+                    <span>第几轮游戏</span>
+                    <span>下注等级</span>
+                    <span>下注数字</span>
+                    <span>下注金额</span>
+                    <span>下注收益</span>
+                    <span>玩家地址</span>
+                    <span>下注时间</span>
+                </div>
+
+                <div class="new-settled-bet-item">
+                    <span>92972e980...</span>
+                    <span>2</span>
+                    <span>小赌注</span>
+                    <span>8</span>
+                    <span>3254</span>
+                    <span>5684</span>
+                    <span>GNAhn5qgPA928AoZtE1ys61KNzwkZGP2ii</span>
+                    <span>2018-09-30 09:40:40</span>
+                </div>
+
+                <div class="new-settled-bet-item">
+                    <span>92972e980...</span>
+                    <span>2</span>
+                    <span>小赌注</span>
+                    <span>8</span>
+                    <span>3254</span>
+                    <span>5684</span>
+                    <span>GNAhn5qgPA928AoZtE1ys61KNzwkZGP2ii</span>
+                    <span>2018-09-30 09:40:40</span>
+                </div>
+
+                <div class="new-settled-bet-item">
+                    <span>92972e980...</span>
+                    <span>2</span>
+                    <span>小赌注</span>
+                    <span>8</span>
+                    <span>3254</span>
+                    <span>5684</span>
+                    <span>GNAhn5qgPA928AoZtE1ys61KNzwkZGP2ii</span>
+                    <span>2018-09-30 09:40:40</span>
+                </div>
+
+                <div class="new-settled-bet-item">
+                    <span>92972e980...</span>
+                    <span>2</span>
+                    <span>小赌注</span>
+                    <span>8</span>
+                    <span>3254</span>
+                    <span>5684</span>
+                    <span>GNAhn5qgPA928AoZtE1ys61KNzwkZGP2ii</span>
+                    <span>2018-09-30 09:40:40</span>
+                </div>
+
+                <div class="new-settled-bet-item">
+                    <span>92972e980...</span>
+                    <span>2</span>
+                    <span>小赌注</span>
+                    <span>8</span>
+                    <span>3254</span>
+                    <span>5684</span>
+                    <span>GNAhn5qgPA928AoZtE1ys61KNzwkZGP2ii</span>
+                    <span>2018-09-30 09:40:40</span>
+                </div>
+
+                <div class="new-settled-bet-item">
+                    <span>92972e980...</span>
+                    <span>2</span>
+                    <span>小赌注</span>
+                    <span>8</span>
+                    <span>3254</span>
+                    <span>5684</span>
+                    <span>GNAhn5qgPA928AoZtE1ys61KNzwkZGP2ii</span>
+                    <span>2018-09-30 09:40:40</span>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</body>
+
+
+
+<script>
+var games = new Vue({
+  el: '#games',
+  data: {
+    name: 'Vue.js',
+    selected_small_bet: true,
+    selected_big_bet: false,
+    selected_large_bet: true,
+  },
+  // 在 `methods` 对象中定义方法
+  methods: {
+    showSmallBet: function(event){
+        this.selected_small_bet = false;
+        this.selected_big_bet = true;
+        this.selected_large_bet = true;
+    },
+    showBigBet: function(event){
+        alert("hello");
+        this.selected_small_bet = true;
+        this.selected_big_bet = false;
+        this.selected_large_bet = true;
+    },
+    showLargeBet: function(event){
+        selected_small_bet = true;
+        selected_big_bet = true;
+        selected_large_bet = false;
+    },
+    setChinese: function(event){
+    	var currUrl = window.location.toString();
+    	var index = currUrl.indexOf('/en/');
+    	if(index < 0){
+    		alert("Already in Chinese!");
+    		return;
+    	}
+    	var urlRoot = currUrl.substring(0,index);
+    	var urlRoute = currUrl.substring(index);
+
+    	var currLanguage = urlRoute.substring(0,4);
+    	var currPage = urlRoute.substring(4);
+
+    	if(currLanguage == "/en/"){
+    		alert("Set to chinese");
+    		setChineseLangCookie();
+    		var newUrl = urlRoot + "/ch/" + currPage;
+    		alert(newUrl);
+
+    		window.location = newUrl;
+    	}
+    	else{
+    		alert("Already in chinese");
+    	}
+
+    },
+    setEnglish: function(event){
+    	alert("Set English: " + window.location);
+    	var currUrl = window.location.toString();
+    	var index = currUrl.indexOf('/ch/');
+    	if(index < 0){
+    		alert("Already in english");
+    		return;
+    	}
+    	var urlRoot = currUrl.substring(0,index);
+    	var urlRoute = currUrl.substring(index);
+
+    	var currLanguage = urlRoute.substring(0,4);
+    	var currPage = urlRoute.substring(4);
+
+    	if(currLanguage == "/ch/"){
+    		alert("Set to english 111");
+    		setEnglishLangCookie();
+    		var newUrl = urlRoot + "/en/" + currPage;
+    		alert(newUrl);
+    		window.location = newUrl;
+    	}
+    	else{
+    		alert("Already in english");
+    	}
+    }
+  }
+})
+</script>
+
+
+
+
+
+</html>
