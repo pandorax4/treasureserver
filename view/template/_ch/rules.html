@@ -1,0 +1,45 @@
+<html>
+    <head>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.17/vue.js"></script>
+        <link rel="stylesheet" href="https://unpkg.com/purecss@0.6.1/build/pure-min.css" integrity="sha384-CCTZv2q9I9m3UOxRLaJneXrrqKwUNOzZ6NGEUMwHtShDJ+nCoiXJCAgi05KfkLGY" crossorigin="anonymous">
+        <link rel="stylesheet" type="text/css" href="../assets/css/history.css"/>
+        <link rel="stylesheet" type="text/css" href="../assets/css/common.css"/>
+    </head>
+
+    <body>
+
+        <header>
+            <div class="header-title">
+                GeekCash Games
+            </div>
+
+            <div class="header-menu">
+                <span>Home</span>
+                <span>Rules</span>
+                <span>Buy</span>
+                <span>History</span>
+                <span>English | 中文</span>
+            </div>
+        </header>
+
+
+        <div class="content-box">
+            <div>可验证公平及游戏运行逻辑</div>
+            <div>
+                <div>1. 每一轮游戏的开奖数字，来源于开奖区块的nonce值最后一位，nonce值无法预测，所以游戏无法作弊。</div>
+                <div>2. 若玩家下注数字与开奖区块nonce值最后一位相同，则为赢家，否则为输家。</div>
+                <div>3. 每一个新的区块产生时，系统会获取本区块<span style="color:red;">之前</span>的下注，<br>
+                    然后将每一个下注的下注数字与本区块nonce值最后一位对比，若同时存在赢家和输家，则本轮游戏结束，当前区块作为开奖区块。<br>
+                    若没有同时存在赢家和输家，则游戏本轮游戏继续。保证每一轮游戏不会有平局。一定有人赢，有人输。</div>
+                <div>4. 每一轮游戏，所有输家的下注成为奖金。<span color="red;">95%分给本轮赢家</span>，5%归平台所有，用于系统开发及维护，</div>
+                <div>5. 每一轮游戏，若存在多个赢家，则每一位赢家获得的奖金数额，按照其下注金额占所有赢家总下注金额的比例，瓜分所有输家的下注。</div>
+                <div>6. 所有下注，以区块链数据为准，任何玩家可以通过区块链查询整个游戏的数据。</div>
+            </div>
+
+            <div>延迟</div>
+            <div>所有下注，以区块链打包为准。</div>
+
+        </div>
+
+    </body>
+</html>

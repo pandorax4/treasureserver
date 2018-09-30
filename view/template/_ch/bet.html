@@ -1,0 +1,66 @@
+<html>
+    <head>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.17/vue.js"></script>
+        <link rel="stylesheet" href="https://unpkg.com/purecss@0.6.1/build/pure-min.css"
+              integrity="sha384-CCTZv2q9I9m3UOxRLaJneXrrqKwUNOzZ6NGEUMwHtShDJ+nCoiXJCAgi05KfkLGY" crossorigin="anonymous">
+        <link rel="stylesheet" type="text/css" href="../../assets/css/bet.css"/>
+        <link rel="stylesheet" type="text/css" href="../../assets/css/common.css"/>
+    </head>
+
+    <body>
+
+        <header>
+            <div class="header-title">
+                GeekCash Games
+            </div>
+
+            <div class="header-menu">
+                <span>Home</span>
+                <span>Rules</span>
+                <span>Buy</span>
+                <span>History</span>
+                <span>English | 中文</span>
+            </div>
+        </header>
+
+        <div class="content-box">
+            <div>
+                <span>第{{game_round}}轮游戏</span><br>
+                <span>下注等级: {{bet_level}}</span>
+                <span>开奖数字: {{reward_number}}</span><br>
+                <span>开始区块: {{start_block}}</span><br>
+                <span>结束区块: {{end_block}}</span><br>
+                <span>开奖区块: {{reward_block}}</span><br>
+                <span>下注数量: {{total_bet_count}}</span><br>
+                <span>下注金额: {{total_bet_amount}}</span><br>
+                <span>赢家数量: {{winner_count}}</span><br>
+                <span>输家数量: {{loser_count}}</span><br>
+                <span>奖金总额: {{total_reward}}</span><br>
+            </div>
+
+            <br>
+
+            <div>
+                <div class="bet-item">
+                    <span>下注txid</span>
+                    <span>下注时间</span>
+                    <span>下注数字</span>
+                    <span>下注金额</span>
+                    <span>收益金额</span>
+                    <span>支付txid</span>
+                </div>
+
+                {{bets_content}}
+
+
+            </div>
+
+
+
+
+
+        </div>
+
+    </body>
+
+</html>

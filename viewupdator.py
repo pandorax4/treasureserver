@@ -8,14 +8,39 @@
 
 import db
 import model
+import json
 
-view_root = "./view/generated/"
-view_ch_root = view_root + "ch/"
+
+index_ch = "index_ch.json"
+index_en = "index_en.json"
+rules_ch = "rules_ch.json"
+rules_en = "rules_en.json"
+bet_ch = "bet_ch.json"
+bet_en = "bet_en.json"
+history_ch = "history_ch.json"
+history_en = "history_en.json"
+
+index_data = "index_data.json"
+bet_small_data = "bet_small_{}.json"
+bet_big_data = "bet_big_{}.json"
+bet_large_data = "bet_large_{}.json"
+history_small_bet_data = "history_small_bet.json"
+history_big_bet_data = "history_big_bet.json"
+history_large_bet_data = "history_large_bet.json"
+
+
+
+
+
+
+# view_root = "./view/generated/"
+view_root = "D:/nginx-1.15.4/html/"
+view_ch_root = view_root + ""
 view_ch_small_bet_root = view_ch_root + "smallbet/"
 view_ch_big_bet_root = view_ch_root + "bigbet/"
 view_ch_large_bet_root = view_ch_root + "largebet/"
 
-view_en_root = view_root + "en/"
+view_en_root = view_root + ""
 view_en_small_bet_root = view_en_root + "smallbet/"
 view_en_big_bet_root = view_en_root + "bigbet/"
 view_en_large_bet_root = view_en_root + "largebet/"
@@ -204,345 +229,258 @@ def generate_settled_history_page(_bet_level):
     f.close()
 
 
-def generate_index_page():
-    f = open(template_index_file, "r", encoding="utf-8")
-    html = f.read()
-    f.close()
-
-    param_dict = {
-        "small_bet_number_0_total_bet": db.get_total_bet_count(1, 0),
-        "small_bet_number_0_total_bet_amount": db.get_total_bet_amount(1, 0),
-        "small_bet_number_0_win_count": db.get_bet_number_total_win_count(1, 0),
-        "small_bet_number_0_address": model.get_small_bet_address_by_number(0),
-
-        "small_bet_number_1_total_bet": db.get_total_bet_count(1, 1),
-        "small_bet_number_1_total_bet_amount": db.get_total_bet_amount(1, 1),
-        "small_bet_number_1_win_count": db.get_bet_number_total_win_count(1, 1),
-        "small_bet_number_1_address": model.get_small_bet_address_by_number(1),
-
-        "small_bet_number_2_total_bet": db.get_total_bet_count(1, 2),
-        "small_bet_number_2_total_bet_amount": db.get_total_bet_amount(1, 2),
-        "small_bet_number_2_win_count": db.get_bet_number_total_win_count(1, 2),
-        "small_bet_number_2_address": model.get_small_bet_address_by_number(2),
-
-        "small_bet_number_3_total_bet": db.get_total_bet_count(1, 3),
-        "small_bet_number_3_total_bet_amount": db.get_total_bet_amount(1, 3),
-        "small_bet_number_3_win_count": db.get_bet_number_total_win_count(1, 3),
-        "small_bet_number_3_address": model.get_small_bet_address_by_number(3),
-
-        "small_bet_number_4_total_bet": db.get_total_bet_count(1, 4),
-        "small_bet_number_4_total_bet_amount": db.get_total_bet_amount(1, 4),
-        "small_bet_number_4_win_count": db.get_bet_number_total_win_count(1, 4),
-        "small_bet_number_4_address": model.get_small_bet_address_by_number(4),
-
-        "small_bet_number_5_total_bet": db.get_total_bet_count(1, 5),
-        "small_bet_number_5_total_bet_amount": db.get_total_bet_amount(1, 5),
-        "small_bet_number_5_win_count": db.get_bet_number_total_win_count(1, 5),
-        "small_bet_number_5_address": model.get_small_bet_address_by_number(5),
-
-        "small_bet_number_6_total_bet": db.get_total_bet_count(1, 6),
-        "small_bet_number_6_total_bet_amount": db.get_total_bet_amount(1, 6),
-        "small_bet_number_6_win_count": db.get_bet_number_total_win_count(1, 6),
-        "small_bet_number_6_address": model.get_small_bet_address_by_number(6),
-
-        "small_bet_number_7_total_bet": db.get_total_bet_count(1, 7),
-        "small_bet_number_7_total_bet_amount": db.get_total_bet_amount(1, 7),
-        "small_bet_number_7_win_count": db.get_bet_number_total_win_count(1, 7),
-        "small_bet_number_7_address": model.get_small_bet_address_by_number(7),
-
-        "small_bet_number_8_total_bet": db.get_total_bet_count(1, 8),
-        "small_bet_number_8_total_bet_amount": db.get_total_bet_amount(1, 8),
-        "small_bet_number_8_win_count": db.get_bet_number_total_win_count(1, 8),
-        "small_bet_number_8_address": model.get_small_bet_address_by_number(8),
-
-        "small_bet_number_9_total_bet": db.get_total_bet_count(1, 9),
-        "small_bet_number_9_total_bet_amount": db.get_total_bet_amount(1, 9),
-        "small_bet_number_9_win_count": db.get_bet_number_total_win_count(1, 9),
-        "small_bet_number_9_address": model.get_small_bet_address_by_number(9),
-
-        "big_bet_number_0_total_bet": db.get_total_bet_count(2, 0),
-        "big_bet_number_0_total_bet_amount": db.get_total_bet_amount(2, 0),
-        "big_bet_number_0_win_count": db.get_bet_number_total_win_count(2, 0),
-        "big_bet_number_0_address": model.get_big_bet_address_by_number(0),
-
-        "big_bet_number_1_total_bet": db.get_total_bet_count(2, 1),
-        "big_bet_number_1_total_bet_amount": db.get_total_bet_amount(2, 1),
-        "big_bet_number_1_win_count": db.get_bet_number_total_win_count(2, 1),
-        "big_bet_number_1_address": model.get_big_bet_address_by_number(1),
-
-        "big_bet_number_2_total_bet": db.get_total_bet_count(2, 2),
-        "big_bet_number_2_total_bet_amount": db.get_total_bet_amount(2, 2),
-        "big_bet_number_2_win_count": db.get_bet_number_total_win_count(2, 2),
-        "big_bet_number_2_address": model.get_big_bet_address_by_number(2),
-
-        "big_bet_number_3_total_bet": db.get_total_bet_count(2, 3),
-        "big_bet_number_3_total_bet_amount": db.get_total_bet_amount(2, 3),
-        "big_bet_number_3_win_count": db.get_bet_number_total_win_count(2, 3),
-        "big_bet_number_3_address": model.get_big_bet_address_by_number(3),
-
-        "big_bet_number_4_total_bet": db.get_total_bet_count(2, 4),
-        "big_bet_number_4_total_bet_amount": db.get_total_bet_amount(2, 4),
-        "big_bet_number_4_win_count": db.get_bet_number_total_win_count(2, 4),
-        "big_bet_number_4_address": model.get_big_bet_address_by_number(4),
-
-        "big_bet_number_5_total_bet": db.get_total_bet_count(2, 5),
-        "big_bet_number_5_total_bet_amount": db.get_total_bet_amount(2, 5),
-        "big_bet_number_5_win_count": db.get_bet_number_total_win_count(2, 5),
-        "big_bet_number_5_address": model.get_big_bet_address_by_number(5),
-
-        "big_bet_number_6_total_bet": db.get_total_bet_count(2, 6),
-        "big_bet_number_6_total_bet_amount": db.get_total_bet_amount(2, 6),
-        "big_bet_number_6_win_count": db.get_bet_number_total_win_count(2, 6),
-        "big_bet_number_6_address": model.get_big_bet_address_by_number(6),
-
-        "big_bet_number_7_total_bet": db.get_total_bet_count(2, 7),
-        "big_bet_number_7_total_bet_amount": db.get_total_bet_amount(2, 7),
-        "big_bet_number_7_win_count": db.get_bet_number_total_win_count(2, 7),
-        "big_bet_number_7_address": model.get_big_bet_address_by_number(7),
-
-        "big_bet_number_8_total_bet": db.get_total_bet_count(2, 8),
-        "big_bet_number_8_total_bet_amount": db.get_total_bet_amount(2, 8),
-        "big_bet_number_8_win_count": db.get_bet_number_total_win_count(2, 8),
-        "big_bet_number_8_address": model.get_big_bet_address_by_number(8),
-
-        "big_bet_number_9_total_bet": db.get_total_bet_count(2, 9),
-        "big_bet_number_9_total_bet_amount": db.get_total_bet_amount(2, 9),
-        "big_bet_number_9_win_count": db.get_bet_number_total_win_count(2, 9),
-        "big_bet_number_9_address": model.get_big_bet_address_by_number(9),
-
-        "large_bet_number_0_total_bet": db.get_total_bet_count(3, 0),
-        "large_bet_number_0_total_bet_amount": db.get_total_bet_amount(3, 0),
-        "large_bet_number_0_win_count": db.get_bet_number_total_win_count(3, 0),
-        "large_bet_number_0_address": model.get_large_bet_address_by_number(0),
-
-        "large_bet_number_1_total_bet": db.get_total_bet_count(3, 1),
-        "large_bet_number_1_total_bet_amount": db.get_total_bet_amount(3, 1),
-        "large_bet_number_1_win_count": db.get_bet_number_total_win_count(3, 1),
-        "large_bet_number_1_address": model.get_large_bet_address_by_number(1),
-
-        "large_bet_number_2_total_bet": db.get_total_bet_count(3, 2),
-        "large_bet_number_2_total_bet_amount": db.get_total_bet_amount(3, 2),
-        "large_bet_number_2_win_count": db.get_bet_number_total_win_count(3, 2),
-        "large_bet_number_2_address": model.get_large_bet_address_by_number(2),
-
-        "large_bet_number_3_total_bet": db.get_total_bet_count(3, 3),
-        "large_bet_number_3_total_bet_amount": db.get_total_bet_amount(3, 3),
-        "large_bet_number_3_win_count": db.get_bet_number_total_win_count(3, 3),
-        "large_bet_number_3_address": model.get_large_bet_address_by_number(3),
-
-        "large_bet_number_4_total_bet": db.get_total_bet_count(3, 4),
-        "large_bet_number_4_total_bet_amount": db.get_total_bet_amount(3, 4),
-        "large_bet_number_4_win_count": db.get_bet_number_total_win_count(3, 4),
-        "large_bet_number_4_address": model.get_large_bet_address_by_number(4),
-
-        "large_bet_number_5_total_bet": db.get_total_bet_count(3, 5),
-        "large_bet_number_5_total_bet_amount": db.get_total_bet_amount(3, 5),
-        "large_bet_number_5_win_count": db.get_bet_number_total_win_count(3, 5),
-        "large_bet_number_5_address": model.get_large_bet_address_by_number(5),
-
-        "large_bet_number_6_total_bet": db.get_total_bet_count(3, 6),
-        "large_bet_number_6_total_bet_amount": db.get_total_bet_amount(3, 6),
-        "large_bet_number_6_win_count": db.get_bet_number_total_win_count(3, 6),
-        "large_bet_number_6_address": model.get_large_bet_address_by_number(6),
-
-        "large_bet_number_7_total_bet": db.get_total_bet_count(3, 7),
-        "large_bet_number_7_total_bet_amount": db.get_total_bet_amount(3, 7),
-        "large_bet_number_7_win_count": db.get_bet_number_total_win_count(3, 7),
-        "large_bet_number_7_address": model.get_large_bet_address_by_number(7),
-
-        "large_bet_number_8_total_bet": db.get_total_bet_count(3, 8),
-        "large_bet_number_8_total_bet_amount": db.get_total_bet_amount(3, 8),
-        "large_bet_number_8_win_count": db.get_bet_number_total_win_count(3, 8),
-        "large_bet_number_8_address": model.get_large_bet_address_by_number(8),
-
-        "large_bet_number_9_total_bet": db.get_total_bet_count(3, 9),
-        "large_bet_number_9_total_bet_amount": db.get_total_bet_amount(3, 9),
-        "large_bet_number_9_win_count": db.get_bet_number_total_win_count(3, 9),
-        "large_bet_number_9_address": model.get_large_bet_address_by_number(9),
-    }
-
-    # Small -------------------------------------
-    curr_game_round = db.get_curr_unsettle_game_round(1)
-    param_dict["small_curr_game_round"] = curr_game_round
-    param_dict["small_curr_bet_count"] = db.get_curr_unsettle_count(1)
-    param_dict["small_curr_bet_amount"] = db.get_curr_unsettle_amount(1)
-    prev_game_round = curr_game_round - 1
-
-    bet_round_data = None
-    if prev_game_round >= 1:
-        bet_round_data = db.get_bet_round_data(1, prev_game_round)
-
-    if bet_round_data is None:
-        param_dict["small_prev_bet_count"] = 0
-        param_dict["small_prev_bet_count"] = 0
-        param_dict["small_prev_bet_amount"] = 0
-        param_dict["small_prev_winner_count"] = 0
-        param_dict["small_prev_loser_count"] = 0
-        param_dict["small_prev_total_reward"] = 0
-        param_dict["small_prev_reward_number"] = 0
-    else:
-        param_dict["small_prev_bet_count"] = bet_round_data.bet_count
-        param_dict["small_prev_bet_amount"] = bet_round_data.total_bet_amount
-        param_dict["small_prev_winner_count"] = bet_round_data.winner_count
-        param_dict["small_prev_loser_count"] = bet_round_data.loser_count
-        param_dict["small_prev_total_reward"] = bet_round_data.total_reward
-        param_dict["small_prev_reward_number"] = bet_round_data.bet_number
-    # Small ------------------------------------- End
-
-    # Big ------------------------------------------
-    curr_game_round = db.get_curr_unsettle_game_round(2)
-    param_dict["big_curr_game_round"] = curr_game_round
-    param_dict["big_curr_bet_count"] = db.get_curr_unsettle_count(2)
-    param_dict["big_curr_bet_amount"] = db.get_curr_unsettle_amount(2)
-    prev_game_round = curr_game_round - 1
-
-    bet_round_data = None
-    if prev_game_round >= 1:
-        bet_round_data = db.get_bet_round_data(2, prev_game_round)
-
-    if bet_round_data is None:
-        param_dict["big_prev_bet_count"] = 0
-        param_dict["big_prev_bet_count"] = 0
-        param_dict["big_prev_bet_amount"] = 0
-        param_dict["big_prev_winner_count"] = 0
-        param_dict["big_prev_loser_count"] = 0
-        param_dict["big_prev_total_reward"] = 0
-        param_dict["big_prev_reward_number"] = 0
-    else:
-        param_dict["big_prev_bet_count"] = bet_round_data.bet_count
-        param_dict["big_prev_bet_amount"] = bet_round_data.total_bet_amount
-        param_dict["big_prev_winner_count"] = bet_round_data.winner_count
-        param_dict["big_prev_loser_count"] = bet_round_data.loser_count
-        param_dict["big_prev_total_reward"] = bet_round_data.total_reward
-        param_dict["big_prev_reward_number"] = bet_round_data.bet_number
-    # Big ------------------------------------- End
-
-    # Large ------------------------------------------
-    curr_game_round = db.get_curr_unsettle_game_round(3)
-    param_dict["large_curr_game_round"] = curr_game_round
-    param_dict["large_curr_bet_count"] = db.get_curr_unsettle_count(3)
-    param_dict["large_curr_bet_amount"] = db.get_curr_unsettle_amount(3)
-    prev_game_round = curr_game_round - 1
-
-    bet_round_data = None
-    if prev_game_round >= 1:
-        bet_round_data = db.get_bet_round_data(2, prev_game_round)
-
-    if bet_round_data is None:
-        param_dict["large_prev_bet_count"] = 0
-        param_dict["large_prev_bet_count"] = 0
-        param_dict["large_prev_bet_amount"] = 0
-        param_dict["large_prev_winner_count"] = 0
-        param_dict["large_prev_loser_count"] = 0
-        param_dict["large_prev_total_reward"] = 0
-        param_dict["large_prev_reward_number"] = 0
-    else:
-        param_dict["large_prev_bet_count"] = bet_round_data.bet_count
-        param_dict["large_prev_bet_amount"] = bet_round_data.total_bet_amount
-        param_dict["large_prev_winner_count"] = bet_round_data.winner_count
-        param_dict["large_prev_loser_count"] = bet_round_data.loser_count
-        param_dict["large_prev_total_reward"] = bet_round_data.total_reward
-        param_dict["large_prev_reward_number"] = bet_round_data.bet_number
-    # Large ------------------------------------- End
-
-    bet_template = """
-    <div class="bet-item">
-            <span>{{join_txid}}</span>
-            <span>{{join_time}}</span>
-            <span>{{bet_number}}</span>
-            <span>{{bet_amount}}</span>
-            <span>{{bet_level}}</span>
-            <span>{{player_address}}</span>
-    </div>
-    """
-
-    """
-           <span>下注txid</span>
-           <span>下注时间</span>
-           <span>下注数字</span>
-           <span>下注金额</span>
-           <span>下注等级</span>
-           <span>玩家地址</span>
-    """
-
-    settled_bet_template = """
-        <div class="bet-item">
-                <span>{{join_txid}}</span>
-                <span>{{join_time}}</span>
-                <span>{{bet_round}}</span>
-                <span>{{bet_number}}</span>
-                <span>{{bet_amount}}</span>
-                <span>{{bet_level}}</span>
-                {{bet_profit}}
-                <span>{{player_address}}</span>
-        </div>
-        """
-
-    # recently unsettle bet list
-    recently_unsettle_bet_list = db.get_recently_unsettle_bet_list()
-    unsettle_bet_content = ""
-    for bet in recently_unsettle_bet_list:
-        bet_str = bet_template
-        bet_str = bet_str.replace("{{join_txid}}", bet.join_txid[0:10])
-        bet_str = bet_str.replace("{{join_time}}", str(bet.created_at))
-        bet_str = bet_str.replace("{{bet_number}}", str(bet.bet_number))
-        bet_str = bet_str.replace("{{bet_amount}}", str(bet.bet_amount))
-        if bet.bet_level == 1:
-            bet_level_str = "小赌注"
-        elif bet.bet_level == 2:
-            bet_level_str = "中赌注"
-        elif bet.bet_level == 3:
-            bet_level_str = "大赌注"
-        bet_str = bet_str.replace("{{bet_level}}", bet_level_str)
-        bet_str = bet_str.replace("{{player_address}}", bet.payment_address)
-        unsettle_bet_content += bet_str + "\n\n"
-    html = html.replace("{{recently_bets_content}}", unsettle_bet_content)
-
-    # recently settled bet list
-    recently_settled_bet_list = db.get_recently_settled_bet_list(100)
-    settled_bet_content = ""
-    for bet in recently_settled_bet_list:
-        bet_str = settled_bet_template
-        bet_str = bet_str.replace("{{join_txid}}", bet.join_txid[0:10])
-        bet_str = bet_str.replace("{{join_time}}", str(bet.created_at))
-        bet_str = bet_str.replace("{{bet_round}}", str(bet.game_round))
-        bet_str = bet_str.replace("{{bet_number}}", str(bet.bet_number))
-        bet_str = bet_str.replace("{{bet_amount}}", str(bet.bet_amount))
-        if bet.bet_level == 1:
-            bet_level_str = "小赌注"
-        elif bet.bet_level == 2:
-            bet_level_str = "中赌注"
-        elif bet.bet_level == 3:
-            bet_level_str = "大赌注"
-        bet_str = bet_str.replace("{{bet_level}}", bet_level_str)
-        if bet.bet_state == 1:
-            profit_str = '<span style="color=green"> ' + str(bet.reward_amount + bet.bet_amount) + ' </span>'
-        else:
-            profit_str = '<span style="color=red"> -' + str(bet.reward_amount + bet.bet_amount) + ' </span>'
-        bet_str = bet_str.replace("{{bet_profit}}", profit_str)
-        bet_str = bet_str.replace("{{player_address}}", bet.payment_address)
-        settled_bet_content += bet_str + "\n\n"
-    html = html.replace("{{recently_settled_content}}", unsettle_bet_content)
-
-    html = html.replace("{{small_min_bet_amount}}", str(model.get_min_bet_amount(1)))
-    html = html.replace("{{big_min_bet_amount}}", str(model.get_min_bet_amount(2)))
-    html = html.replace("{{large_min_bet_amount}}", str(model.get_min_bet_amount(3)))
-
-    for key in param_dict:
-        # print(key, param_dict[key])
-        html = html.replace("{{" + key + "}}", str(param_dict[key]))
-    html_file = get_index_file_path(1)
-    f = open(html_file, "w", encoding="utf-8")
-    f.write(html)
-    f.close()
-
-
 def push_page():
     pass
 
 
+class BetAddress(object):
+    def __init__(self, _bet_level, _number):
+        self.number = _number
+        self.address = model.get_bet_address(_bet_level, self.number)
+        self.total_bet_count = db.get_total_bet_count(_bet_level, self.number)
+        self.total_bet_amount = db.get_total_bet_amount(_bet_level, self.number)
+        self.total_win_count = db.get_bet_number_total_win_count(_bet_level, self.number)
+
+    def get_json_obj(self):
+        return {
+            "number": self.number,
+            "address": self.address,
+            "total_bet_count": self.total_bet_count,
+            "total_bet_amount": self.total_bet_amount,
+            "total_win_count": self.total_win_count,
+        }
+
+
+class CurrBetInfo(object):
+    def __init__(self, _bet_level):
+        self.round = db.get_curr_unsettle_game_round(_bet_level)
+        self.bet_count = db.get_curr_unsettle_count(_bet_level)
+        self.bet_amount = db.get_curr_unsettle_amount(_bet_level)
+
+    def get_json_obj(self):
+        return {
+            "round": self.round,
+            "bet_count": self.bet_count,
+            "bet_amount": self.bet_amount,
+        }
+
+
+class SettledBetInfo(object):
+    def __init__(self, _bet_level):
+        self.round = db.get_last_game_round_number(_bet_level)
+        self.bet_count = 0
+        self.bet_amount = 0
+        self.winner_count = 0
+        self.loser_count = 0
+        self.total_reward = 0
+        self.bet_number = -1
+
+        if self.round > 0:
+            bet_round_data = db.get_bet_round_data(_bet_level, self.round)
+            if bet_round_data is not None:
+                self.bet_count = bet_round_data.bet_count
+                self.bet_amount = bet_round_data.total_bet_amount
+                self.winner_count = bet_round_data.winner_count
+                self.loser_count = bet_round_data.loser_count
+                self.total_reward = bet_round_data.total_reward
+                self.bet_number = bet_round_data.bet_number
+
+    def get_json_obj(self):
+        return {
+            "round": self.round,
+            "bet_count": self.bet_count,
+            "bet_amount": self.bet_amount,
+            "winner_count": self.winner_count,
+            "loser_count": self.loser_count,
+            "total_reward": self.total_reward,
+            "bet_number": self.bet_number,
+        }
+
+
+class UnSettleBet(object):
+    def __init__(self,
+                 _join_txid,
+                 _join_block,
+                 _bet_round,
+                 _bet_level,
+                 _bet_number,
+                 _bet_amount,
+                 _player_address,
+                 _join_time):
+        self.short_txid = _join_txid[:10] + "..."
+        self.join_block = _join_block
+        self.short_txid_link_to = ""
+        self.bet_round = _bet_round
+        self.bet_level = _bet_level
+        self.bet_number = _bet_number
+        self.bet_amount = _bet_amount
+        self.player_address = _player_address
+        self.join_time = _join_time
+
+    def get_json_obj(self):
+        return {
+            "short_txid": self.short_txid,
+            "join_block": self.join_block,
+            "short_txid_link_to": self.short_txid_link_to,
+            "bet_round": self.bet_round,
+            "bet_level": self.bet_level,
+            "bet_number": self.bet_number,
+            "bet_amount": self.bet_amount,
+            "player_address": self.player_address,
+            "join_time": self.join_time,
+        }
+
+
+class SettledBet(object):
+    def __init__(self,
+                 _join_txid,
+                 _join_block,
+                 _settled_block,
+                 _bet_round,
+                 _bet_level,
+                 _bet_number,
+                 _bet_amount,
+                 _bet_reward,
+                 _bet_state,
+                 _player_address,
+                 _join_time):
+        self.short_txid = _join_txid[:10] + "..."
+        self.join_block = _join_block
+        self.settled_block = _settled_block
+        self.short_txid_link_to = ""
+        self.bet_round = _bet_round
+        self.bet_level = _bet_level
+        self.bet_number = _bet_number
+        self.bet_amount = _bet_amount
+        self.bet_reward = _bet_reward
+        self.bet_state = _bet_state
+        self.player_address = _player_address
+        self.join_time = _join_time
+
+        if self.bet_state == 1:
+            self.bet_reward += self.bet_amount
+        else:
+            self.bet_reward = -self.bet_amount
+
+    def get_json_obj(self):
+        return {
+            "short_txid": self.short_txid,
+            "join_block": self.join_block,
+            "settled_block": self.settled_block,
+            "short_txid_link_to": self.short_txid_link_to,
+            "bet_round": self.bet_round,
+            "bet_level": self.bet_level,
+            "bet_number": self.bet_number,
+            "bet_amount": self.bet_amount,
+            "bet_reward": self.bet_reward,
+            "player_address": self.player_address,
+            "join_time": self.join_time,
+        }
+
+
+class BetLevel(object):
+    def __init__(self, _bet_level):
+        self.addresses = []
+        self.min_bet_amount = model.get_min_bet_amount(_bet_level)
+        self.curr_bet_info = CurrBetInfo(_bet_level)
+        self.prev_bet_info = SettledBetInfo(_bet_level)
+        self.recently_winners = []
+        self.init_addresses(_bet_level)
+        self.init_recently_winners(_bet_level)
+
+    def get_json_obj(self):
+        return {
+            "addresses": self.addresses,
+            "min_bet_amount": self.min_bet_amount,
+            "curr_bet_info": self.curr_bet_info.get_json_obj(),
+            "prev_bet_info": self.prev_bet_info.get_json_obj(),
+            "recently_winners": self.recently_winners,
+        }
+
+    def init_addresses(self, _bet_level):
+        for x in range(10):
+            self.addresses.append(BetAddress(_bet_level, x).get_json_obj())
+
+    def init_recently_winners(self, _bet_level):
+        bet_list = db.get_recently_winner_list(_bet_level, 7)
+        for bet in bet_list:
+            settledbet = SettledBet(
+                bet.join_txid,
+                bet.join_block_height,
+                bet.settlement_block_height,
+                bet.game_round,
+                bet.bet_level,
+                bet.bet_number,
+                bet.bet_amount,
+                bet.reward_amount,
+                bet.bet_state,
+                bet.payment_address,
+                bet.created_at.strftime("%Y-%m-%d %H:%M:%S")
+            )
+            self.recently_winners.append(settledbet.get_json_obj())
+
+
+class PageIndex(object):
+    def __init__(self):
+        self.small_bets = BetLevel(1).get_json_obj()
+        self.big_bets = BetLevel(2).get_json_obj()
+        self.large_bets = BetLevel(3).get_json_obj()
+        self.recently_unsettle_bets = []
+        self.recently_settled_bets = []
+        self.init_recently_settled_bets()
+        self.init_recently_unsettle_bets()
+
+    def get_json_obj(self):
+        return {
+            "small_bets": self.small_bets,
+            "big_bets": self.big_bets,
+            "large_bets": self.large_bets,
+            "recently_unsettle_bets": self.recently_unsettle_bets,
+            "recently_settled_bets": self.recently_settled_bets,
+        }
+
+    def init_recently_unsettle_bets(self):
+        bet_list = db.get_recently_unsettle_bet_list()
+        for bet in bet_list:
+            unsettlebet = UnSettleBet(
+                bet.join_txid,
+                bet.join_block_height,
+                bet.game_round,
+                bet.bet_level,
+                bet.bet_number,
+                bet.bet_amount,
+                bet.payment_address,
+                bet.created_at.strftime("%Y-%m-%d %H:%M:%S")
+            )
+            self.recently_unsettle_bets.append(unsettlebet.get_json_obj())
+
+    def init_recently_settled_bets(self):
+        bet_list = db.get_recently_settled_bet_list(100)
+        for bet in bet_list:
+            settledbet = SettledBet(
+                bet.join_txid,
+                bet.join_block_height,
+                bet.settlement_block_height,
+                bet.game_round,
+                bet.bet_level,
+                bet.bet_number,
+                bet.bet_amount,
+                bet.reward_amount,
+                bet.bet_state,
+                bet.payment_address,
+                bet.created_at.strftime("%Y-%m-%d %H:%M:%S")
+            )
+            self.recently_settled_bets.append(settledbet.get_json_obj())
+
+
+def generate_index_data_json():
+    page_index = PageIndex().get_json_obj()
+    json_str = json.dumps(page_index)
+    with open("index.json", "w", encoding="utf-8") as f:
+        f.write(json_str)
+
+
 def update_view(_small_settled_round_list, _big_settled_round_list, _large_settled_round_list):
-    generate_index_page()
 
     generate_settled_bet_detail_page(_small_settled_round_list, 1)
     generate_settled_bet_detail_page(_big_settled_round_list, 2)
@@ -556,7 +494,6 @@ def update_view(_small_settled_round_list, _big_settled_round_list, _large_settl
 
 
 def regenerate_all():
-    generate_index_page()
     small_last_game_round = db.get_last_game_round_number(1)
     big_last_game_round = db.get_last_game_round_number(2)
     large_last_game_round = db.get_last_game_round_number(3)
@@ -584,5 +521,6 @@ def regenerate_all():
     generate_settled_history_page(3)
 
 
-db.init_db()
-regenerate_all()
+#db.init_db()
+#regenerate_all()
+#generate_index_page()

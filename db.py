@@ -107,6 +107,7 @@ def save_new_bet_list(_bet_list, _bet_level):
                     bet_amount=bet["bet_amount"],
                     payment_address=bet["payment_address"],
                     bet_level=bet["bet_level"],
+                    game_round=bet["bet_round"],
                 )
 
 
@@ -141,7 +142,7 @@ def get_total_bet_count(_bet_level, _bet_number):
 
 def get_total_bet_amount(_bet_level, _bet_number):
     sum_amount = DBBet.select(fn.SUM(DBBet.bet_amount)).where(
-        (DBBet.bet_level == _bet_level) * (DBBet.bet_number == _bet_number)).scalar()
+        (DBBet.bet_level == _bet_level) & (DBBet.bet_number == _bet_number)).scalar()
     if sum_amount is None:
         return 0
     else:
@@ -220,6 +221,11 @@ def get_recently_unsettle_bet_list():
 
 def get_recently_settled_bet_list(_limit):
     result = DBBet.select().where(DBBet.bet_state != -1).order_by(DBBet.created_at.desc()).limit(_limit)
+    return result
+
+
+def get_recently_winner_list(_bet_level, _limit):
+    result = DBBet.select().where((DBBet.bet_state == 1) & (DBBet.bet_level == _bet_level)).order_by(DBBet.created_at.desc()).limit(_limit)
     return result
 
 

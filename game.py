@@ -36,6 +36,7 @@ def init_addresses():
         address = api.get_or_create_address(account_name)
         model.small_bet_address_dict[account_name] = address
         model.small_address_number_dict[address] = x
+        model.small_number_address_dict[x] = address
 
     # init big addresses
     for x in range(10):
@@ -43,6 +44,7 @@ def init_addresses():
         address = api.get_or_create_address(account_name)
         model.big_bet_address_dict[account_name] = address
         model.big_address_number_dict[address] = x
+        model.big_number_address_dict[x] = address
 
     # init large addresses
     for x in range(10):
@@ -50,6 +52,7 @@ def init_addresses():
         address = api.get_or_create_address(account_name)
         model.large_bet_address_dict[account_name] = address
         model.large_address_number_dict[address] = x
+        model.large_number_address_dict[x] = address
 
 
 def step1_try_save_bet_list(_curr_block_height, _bet_level):
@@ -67,6 +70,8 @@ def step1_try_save_bet_list(_curr_block_height, _bet_level):
     else:
         print("Error!, Wrong Diff Level: {}".format(_bet_level))
         return
+
+    curr_game_round = db.get_curr_unsettle_game_round(_bet_level)
 
     for account_name in bet_address_dict:
         bet_address = bet_address_dict[account_name]
@@ -98,6 +103,7 @@ def step1_try_save_bet_list(_curr_block_height, _bet_level):
                 bet_data["bet_amount"] = util.get_precision(float(unspent["amount"]), 8)
                 bet_data["payment_address"] = input_address_list[0]
                 bet_data["bet_level"] = _bet_level
+                bet_data["bet_round"] = curr_game_round
 
                 bet_list.append(bet_data)
     db.save_new_bet_list(bet_list, _bet_level)
@@ -278,5 +284,6 @@ def game_loop():
 
 init_addresses()
 db.init_db()
-game_loop()
+#game_loop()
+viewupdator.generate_index_data_json()
 
